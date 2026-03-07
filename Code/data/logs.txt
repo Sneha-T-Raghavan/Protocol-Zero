@@ -1,0 +1,38 @@
+2024-01-15 08:00:01 INFO  Application started successfully
+2024-01-15 08:00:05 INFO  Database connection established
+2024-01-15 08:01:12 DEBUG Fetching user records: 1203 rows
+2024-01-15 08:02:30 INFO  Health check passed
+2024-01-15 08:03:45 WARNING Slow query detected: 2300ms
+2024-01-15 08:04:01 ERROR Failed to connect to cache: timeout after 5000ms
+2024-01-15 08:04:02 ERROR Retry attempt 1 failed: cache unreachable
+2024-01-15 08:04:03 ERROR Retry attempt 2 failed: cache unreachable
+2024-01-15 08:04:04 ERROR Retry attempt 3 failed: cache unreachable
+2024-01-15 08:04:05 ERROR Cache service completely unavailable
+2024-01-15 08:04:06 ERROR Downstream service auth-service: connection refused
+2024-01-15 08:04:07 ERROR Downstream service payment-service: connection refused
+2024-01-15 08:04:08 CRITICAL System entering degraded mode
+2024-01-15 08:04:09 ERROR Request queue overflow: 5000 pending requests
+2024-01-15 08:04:10 ERROR Memory threshold exceeded: 94% utilization
+2024-01-15 08:05:00 INFO  Attempting graceful recovery
+2024-01-15 08:05:30 WARNING Cache reconnecting...
+2024-01-15 08:06:00 INFO  Cache connection restored
+2024-01-15 08:07:00 INFO  Services normalizing
+2024-01-15 08:08:00 INFO  System health check passed
+2024-01-15 08:09:00 DEBUG Processing batch job #4421
+2024-01-15 08:10:00 INFO  Batch job #4421 completed: 842 records processed
+2024-01-15 08:11:00 WARNING Disk usage at 78%
+2024-01-15 08:12:00 INFO  Scheduled maintenance window approaching
+2024-01-15 08:13:00 ERROR NullPointerException in UserService.getProfile() line 142
+2024-01-15 08:13:01 ERROR Unhandled exception in request handler thread-pool-7
+2024-01-15 08:13:02 ERROR Stack overflow in recursive call: depth 512
+2024-01-15 08:13:03 ERROR Database transaction rolled back: constraint violation
+2024-01-15 08:13:04 ERROR Failed to write audit log: disk full
+2024-01-15 08:13:05 ERROR Authentication token expired for 312 active sessions
+2024-01-15 08:13:06 ERROR Rate limiter breach: 10,000 req/min from 192.168.1.45
+2024-01-15 08:14:00 INFO  Alert notifications dispatched
+2024-01-15 08:15:00 WARNING Rolling restart initiated
+2024-01-15 08:16:00 INFO  All pods restarted successfully
+2024-01-15 08:17:00 INFO  System fully operational
+2024-01-15 08:18:00 DEBUG Cache warm-up complete: 50,000 keys loaded
+2024-01-15 08:19:00 INFO  Monitoring resumed
+2024-01-15 08:20:00 INFO  End of log window

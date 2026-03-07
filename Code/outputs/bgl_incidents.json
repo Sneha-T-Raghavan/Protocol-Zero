@@ -1,0 +1,291 @@
+[
+  {
+    "anomaly_type": "ERROR_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 395,
+    "incident_id": "3b4a131c76e475654784ee430f47a7dd",
+    "timestamp": "2026-03-04T10:25:37.529602+00:00",
+    "window_seconds": null,
+    "details": "Total error count 395 exceeded threshold 50. Severity assessed as CRITICAL.",
+    "sample_errors": [
+      "ciod: failed to read message prefix on control stream (CioStream socket to 172.16.96.116:33569",
+      "ciod: failed to read message prefix on control stream (CioStream socket to 172.16.96.116:33370",
+      "force load/store alignment...............0",
+      "ciod: LOGIN chdir(/p/gb2/glosli/8M_5000K/t800) failed: No such file or directory",
+      "data TLB error interrupt"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 20,
+    "incident_id": "2d7e2484593211a39775aceff28ec9aa",
+    "timestamp": "2026-03-04T10:25:37.534112+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 21 (approx. 2005-06-05T05:23:26.239153).",
+    "sample_errors": [
+      "force load/store alignment...............0",
+      "ciod: LOGIN chdir(/p/gb2/glosli/8M_5000K/t800) failed: No such file or directory",
+      "data TLB error interrupt",
+      "data TLB error interrupt",
+      "data TLB error interrupt"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 67,
+    "incident_id": "6acb907e1401eece37774a30175dd4da",
+    "timestamp": "2026-03-04T10:25:37.534648+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 67 errors in a window of 100 log entries starting at index 71 (approx. 2005-06-07T06:05:49.961844).",
+    "sample_errors": [
+      "ciod: LOGIN chdir(/p/gb2/glosli/8M_5000K/t800) failed: No such file or directory",
+      "data TLB error interrupt",
+      "data TLB error interrupt",
+      "data TLB error interrupt",
+      "data TLB error interrupt"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 93,
+    "incident_id": "c3ebe36b999f6e37c6720c96e69f67c2",
+    "timestamp": "2026-03-04T10:25:37.534648+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 93 errors in a window of 100 log entries starting at index 121 (approx. 2005-06-11T19:12:56.115636).",
+    "sample_errors": [
+      "data TLB error interrupt",
+      "data TLB error interrupt",
+      "data TLB error interrupt",
+      "data TLB error interrupt",
+      "data TLB error interrupt"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 95,
+    "incident_id": "2b0150d4c9efaa9889d474178df8a9ad",
+    "timestamp": "2026-03-04T10:25:37.535667+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 95 errors in a window of 100 log entries starting at index 171 (approx. 2005-06-13T17:41:57.658353).",
+    "sample_errors": [
+      "data storage interrupt",
+      "data storage interrupt",
+      "instruction address: 0x00004ed8",
+      "instruction address: 0x00004ed8",
+      "instruction address: 0x00004ed8"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 92,
+    "incident_id": "e17daa575c50293a6ffcee8d9362d552",
+    "timestamp": "2026-03-04T10:25:37.535667+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 92 errors in a window of 100 log entries starting at index 221 (approx. 2005-06-14T09:56:02.974678).",
+    "sample_errors": [
+      "data address: 0x00000002",
+      "data storage interrupt",
+      "data address: 0x00000002",
+      "machine check: i-fetch......................0",
+      "data storage interrupt"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 45,
+    "incident_id": "b7aa42c0f3ddbf47bd825cb5b9d9ea00",
+    "timestamp": "2026-03-04T10:25:37.536667+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 45 errors in a window of 100 log entries starting at index 271 (approx. 2005-06-14T10:52:08.434393).",
+    "sample_errors": [
+      "core configuration register: 0x00002000",
+      "program interrupt: imprecise exception......0",
+      "program interrupt: fp cr update.............0",
+      "guaranteed instruction cache block touch.0",
+      "guaranteed instruction cache block touch.0"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 20,
+    "incident_id": "7f0e42d2dae85e0a82fd51d7952cb478",
+    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1132 (approx. 2005-07-23T17:47:06.550385).",
+    "sample_errors": [
+      "NodeCard is not fully functional",
+      "Node card status: ALERT 0, ALERT 1, ALERT 2, ALERT 3 is (are) active. Clock Mode is Low. Clock Select is Midplane. Phy JTAG Reset is asserted. ASIC JTAG Reset is not asserted. Temperature Mask is not active. No temperature error. Temperature Limit Error Latch is clear. PGOOD is asserted. PGOOD error latch is clear. MPGOOD is OK. MPGOOD error latch is clear. The 2.5 volt rail is OK. The 1.5 volt rail is OK.",
+      "Can not get assembly information for node card",
+      "Can not get assembly information for node card",
+      "idoproxydb hit ASSERT condition: ASSERT expression=0 Source file=idotransportmgr.cpp Source line=1043 Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglCtlPavTrace*)"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 44,
+    "incident_id": "9659cd660404647b1595569600e7c2f8",
+    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 44 errors in a window of 100 log entries starting at index 1182 (approx. 2005-07-26T19:26:11.720872).",
+    "sample_errors": [
+      "NodeCard is not fully functional",
+      "Node card status: ALERT 0, ALERT 1, ALERT 2, ALERT 3 is (are) active. Clock Mode is Low. Clock Select is Midplane. Phy JTAG Reset is asserted. ASIC JTAG Reset is not asserted. Temperature Mask is not active. No temperature error. Temperature Limit Error Latch is clear. PGOOD is asserted. PGOOD error latch is clear. MPGOOD is OK. MPGOOD error latch is clear. The 2.5 volt rail is OK. The 1.5 volt rail is OK.",
+      "Can not get assembly information for node card",
+      "Can not get assembly information for node card",
+      "idoproxydb hit ASSERT condition: ASSERT expression=0 Source file=idotransportmgr.cpp Source line=1043 Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglCtlPavTrace*)"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 25,
+    "incident_id": "cba277ab73480271c83ab14e58770954",
+    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 25 errors in a window of 100 log entries starting at index 1232 (approx. 2005-08-09T18:25:55.113195).",
+    "sample_errors": [
+      "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_243_0810/allreduce.rts: invalid or missing program image, Exec format error",
+      "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_243_0810/allreduce.rts: invalid or missing program image, Exec format error",
+      "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_243_0810/allreduce.rts: invalid or missing program image, Exec format error",
+      "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_243_0810/allreduce.rts: invalid or missing program image, Exec format error",
+      "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_243_0810/allreduce.rts: invalid or missing program image, Exec format error"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 20,
+    "incident_id": "ee21a971172c2a42c3945858c50713a7",
+    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1311 (approx. 2005-08-26T12:24:56.862775).",
+    "sample_errors": [
+      "Node card status: no ALERTs are active. Clock Mode is Low. Clock Select is Midplane. Phy JTAG Reset is asserted. ASIC JTAG Reset is asserted. Temperature Mask is not active. No temperature error. Temperature Limit Error Latch is clear. PGOOD IS NOT ASSERTED. PGOOD ERROR LATCH IS ACTIVE. MPGOOD IS NOT OK. MPGOOD ERROR LATCH IS ACTIVE. The 2.5 volt rail is OK. The 1.5 volt rail is OK.",
+      "Lustre mount FAILED : bglio559 : point /p/gb1",
+      "Lustre mount FAILED : bglio344 : point /p/gb1",
+      "ciod: LOGIN chdir(/bglscratch/bwallen/SWL/SYS-CALLS/testcases/kernel/syscalls/truncate) failed: No such file or directory",
+      "Lustre mount FAILED : bglio46 : point /p/gb1"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 59,
+    "incident_id": "65f5d2ce8d8d9a23eebd846977590886",
+    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 59 errors in a window of 100 log entries starting at index 1361 (approx. 2005-08-28T03:11:54.456031).",
+    "sample_errors": [
+      "Lustre mount FAILED : bglio559 : point /p/gb1",
+      "Lustre mount FAILED : bglio344 : point /p/gb1",
+      "ciod: LOGIN chdir(/bglscratch/bwallen/SWL/SYS-CALLS/testcases/kernel/syscalls/truncate) failed: No such file or directory",
+      "Lustre mount FAILED : bglio46 : point /p/gb1",
+      "Lustre mount FAILED : bglio136 : point /p/gb1"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 52,
+    "incident_id": "3976ce5b3e19dcf45bb6a52910b50f7a",
+    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 52 errors in a window of 100 log entries starting at index 1411 (approx. 2005-09-19T11:28:09.693945).",
+    "sample_errors": [
+      "ciod: LOGIN chdir(/home/yates/SWL_tests/BGL64k_SWL_tests_develop/MPI-VAL/MPITs_v050902/rundir) failed: No such file or directory",
+      "idoproxydb hit ASSERT condition: ASSERT expression=0 Source file=idotransportmgr.cpp Source line=1043 Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglCtlPavTrace*)",
+      "idoproxydb hit ASSERT condition: ASSERT expression=0 Source file=idotransportmgr.cpp Source line=1043 Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglCtlPavTrace*)",
+      "idoproxydb hit ASSERT condition: ASSERT expression=0 Source file=idotransportmgr.cpp Source line=1043 Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglCtlPavTrace*)",
+      "idoproxydb hit ASSERT condition: ASSERT expression=0 Source file=idotransportmgr.cpp Source line=1043 Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglCtlPavTrace*)"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 21,
+    "incident_id": "f5491880ff200d76d8199cdf0964d3b5",
+    "timestamp": "2026-03-04T10:25:37.546333+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 21 errors in a window of 100 log entries starting at index 1461 (approx. 2005-09-24T13:04:00.023717).",
+    "sample_errors": [
+      "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to 172.16.96.116:34903: Link has been severed",
+      "ciod: Error loading /home/spelce1/HPCC_IBM/Urgent/Gunnels/VNM64/vnm.rts: invalid or missing program image, Permission denied",
+      "ciod: Error loading /home/spelce1/HPCC_IBM/Urgent/VNM/64K/vnm.rts: invalid or missing program image, Permission denied",
+      "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to 172.16.96.116:53591: Link has been severed",
+      "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to 172.16.96.116:57673: Link has been severed"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 20,
+    "incident_id": "d32a14556f5b9995b02e1916e5d71bcd",
+    "timestamp": "2026-03-04T10:25:37.546333+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1688 (approx. 2005-11-04T18:02:11.252563).",
+    "sample_errors": [
+      "ciod: Error loading /bgl/apps/followup/RAPTOR/pre-study/raptor.newcomp.r1: invalid or missing program image, Permission denied",
+      "ciod: Error loading /bgl/apps/followup/RAPTOR/pre-study/raptor.newcomp.r1: invalid or missing program image, Permission denied",
+      "Error receiving packet on tree network, expecting type 57 instead of type 3 (softheader=00589370 90990003 00000002 00000000) PSR0=00001f01 PSR1=00000000 PRXF=00000002 PIXF=00000007",
+      "program interrupt: privileged instruction...0",
+      "rts: kernel terminated for reason 1004"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 22,
+    "incident_id": "54e1fbcb2f59a93b547e5c080ddf7573",
+    "timestamp": "2026-03-04T10:25:37.546333+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 22 errors in a window of 100 log entries starting at index 1738 (approx. 2005-11-10T12:11:52.704752).",
+    "sample_errors": [
+      "rts: kernel terminated for reason 1004",
+      "rts: kernel terminated for reason 1004",
+      "Error receiving packet on tree network, expecting type 57 instead of type 3 (softheader=00ce22e8 e6200003 00000002 00000000) PSR0=00001f01 PSR1=00000000 PRXF=00000002 PIXF=00000007",
+      "Error receiving packet on tree network, expecting type 57 instead of type 3 (softheader=00ce22e8 e6200003 00000002 00000000) PSR0=20021f01 PSR1=00000000 PRXF=00000002 PIXF=00000007",
+      "rts: kernel terminated for reason 1004"
+    ]
+  },
+  {
+    "anomaly_type": "SLIDING_WINDOW_SPIKE",
+    "severity": "CRITICAL",
+    "source": "data/BGL.log",
+    "error_count": 20,
+    "incident_id": "1998cdb5689783cc14e64240a82ddac0",
+    "timestamp": "2026-03-04T10:25:37.549330+00:00",
+    "window_seconds": 100,
+    "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1882 (approx. 2005-12-01T08:33:03.466525).",
+    "sample_errors": [
+      "minus normalized number..................0",
+      "Lustre mount FAILED : bglio617 : block_id : location",
+      "fraction rounded.........................0",
+      "size of scratchpad portion of L3.........0 (0M)",
+      "ciod: Error loading /g/g90/glosli/src/ddcMD/ddcMD1.1.17/bin/ddcMDbglV: invalid or missing program image, No such file or directory"
+    ]
+  }
+]

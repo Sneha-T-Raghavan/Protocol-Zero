@@ -1,0 +1,63 @@
+=================================================================
+  PROTOCOL ZERO — Phase 2 | BGL Dataset Benchmark Report
+=================================================================
+
+── Dataset Stats ──────────────────────────────────────────
+  Total log lines     :      2,000
+  Labelled anomalies  :        143  (7.15%)
+  Error-level entries :        395  (19.75%)
+
+── Detection Results ───────────────────────────────────────
+  Incidents detected  :         17
+  Pipeline runtime    :      0.02s
+  Lines/second        :     87,616
+
+── Top Error Components ────────────────────────────────────
+  KERNEL                  240 errors
+  APP                     107 errors
+  MMCS                     35 errors
+  DISCOVERY                12 errors
+  HARDWARE                  1 errors
+
+── Incident Breakdown ──────────────────────────────────────
+  By anomaly type:
+    ERROR_SPIKE                       1
+    SLIDING_WINDOW_SPIKE             16
+  By severity:
+    CRITICAL     17  █████████████████
+    HIGH          0  
+    MEDIUM        0  
+    LOW           0  
+
+── Sample Incidents (first 5) ──────────────────────────────
+  [CRITICAL] ERROR_SPIKE
+    ID       : 5f0ed2f51dd646844d05d8828a52967c
+    Errors   : 395
+    Details  : Total error count 395 exceeded threshold 50. Severity assessed as CRITICAL.…
+    Sample   : ciod: failed to read message prefix on control stream (CioStream socke
+
+  [CRITICAL] SLIDING_WINDOW_SPIKE
+    ID       : 6452e088f959e320252acbcaf2108e74
+    Errors   : 20
+    Details  : Error burst detected: 20 errors in a window of 100 log entries starting at index…
+    Sample   : force load/store alignment...............0
+
+  [CRITICAL] SLIDING_WINDOW_SPIKE
+    ID       : 40929a539ad63336a94f3c5afb4ee3e7
+    Errors   : 67
+    Details  : Error burst detected: 67 errors in a window of 100 log entries starting at index…
+    Sample   : ciod: LOGIN chdir(/p/gb2/glosli/8M_5000K/t800) failed: No such file or
+
+  [CRITICAL] SLIDING_WINDOW_SPIKE
+    ID       : d3a65ae5c9d7c95dd33ac7d90f149c28
+    Errors   : 93
+    Details  : Error burst detected: 93 errors in a window of 100 log entries starting at index…
+    Sample   : data TLB error interrupt
+
+  [CRITICAL] SLIDING_WINDOW_SPIKE
+    ID       : 5bb80abd51c695cedbab30f3b37b94eb
+    Errors   : 95
+    Details  : Error burst detected: 95 errors in a window of 100 log entries starting at index…
+    Sample   : data storage interrupt
+
+=================================================================
