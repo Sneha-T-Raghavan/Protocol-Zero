@@ -5,7 +5,7 @@
     "source": "data/BGL.log",
     "error_count": 395,
     "incident_id": "3b4a131c76e475654784ee430f47a7dd",
-    "timestamp": "2026-03-04T10:25:37.529602+00:00",
+    "timestamp": "2026-03-30T09:05:52.928098+00:00",
     "window_seconds": null,
     "details": "Total error count 395 exceeded threshold 50. Severity assessed as CRITICAL.",
     "sample_errors": [
@@ -22,7 +22,7 @@
     "source": "data/BGL.log",
     "error_count": 20,
     "incident_id": "2d7e2484593211a39775aceff28ec9aa",
-    "timestamp": "2026-03-04T10:25:37.534112+00:00",
+    "timestamp": "2026-03-30T09:05:52.928098+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 21 (approx. 2005-06-05T05:23:26.239153).",
     "sample_errors": [
@@ -39,7 +39,7 @@
     "source": "data/BGL.log",
     "error_count": 67,
     "incident_id": "6acb907e1401eece37774a30175dd4da",
-    "timestamp": "2026-03-04T10:25:37.534648+00:00",
+    "timestamp": "2026-03-30T09:05:52.944156+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 67 errors in a window of 100 log entries starting at index 71 (approx. 2005-06-07T06:05:49.961844).",
     "sample_errors": [
@@ -56,7 +56,7 @@
     "source": "data/BGL.log",
     "error_count": 93,
     "incident_id": "c3ebe36b999f6e37c6720c96e69f67c2",
-    "timestamp": "2026-03-04T10:25:37.534648+00:00",
+    "timestamp": "2026-03-30T09:05:52.944156+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 93 errors in a window of 100 log entries starting at index 121 (approx. 2005-06-11T19:12:56.115636).",
     "sample_errors": [
@@ -73,7 +73,7 @@
     "source": "data/BGL.log",
     "error_count": 95,
     "incident_id": "2b0150d4c9efaa9889d474178df8a9ad",
-    "timestamp": "2026-03-04T10:25:37.535667+00:00",
+    "timestamp": "2026-03-30T09:05:52.945396+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 95 errors in a window of 100 log entries starting at index 171 (approx. 2005-06-13T17:41:57.658353).",
     "sample_errors": [
@@ -90,7 +90,7 @@
     "source": "data/BGL.log",
     "error_count": 92,
     "incident_id": "e17daa575c50293a6ffcee8d9362d552",
-    "timestamp": "2026-03-04T10:25:37.535667+00:00",
+    "timestamp": "2026-03-30T09:05:52.946179+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 92 errors in a window of 100 log entries starting at index 221 (approx. 2005-06-14T09:56:02.974678).",
     "sample_errors": [
@@ -107,7 +107,7 @@
     "source": "data/BGL.log",
     "error_count": 45,
     "incident_id": "b7aa42c0f3ddbf47bd825cb5b9d9ea00",
-    "timestamp": "2026-03-04T10:25:37.536667+00:00",
+    "timestamp": "2026-03-30T09:05:52.946179+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 45 errors in a window of 100 log entries starting at index 271 (approx. 2005-06-14T10:52:08.434393).",
     "sample_errors": [
@@ -124,7 +124,7 @@
     "source": "data/BGL.log",
     "error_count": 20,
     "incident_id": "7f0e42d2dae85e0a82fd51d7952cb478",
-    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "timestamp": "2026-03-30T09:05:52.953120+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1132 (approx. 2005-07-23T17:47:06.550385).",
     "sample_errors": [
@@ -141,7 +141,7 @@
     "source": "data/BGL.log",
     "error_count": 44,
     "incident_id": "9659cd660404647b1595569600e7c2f8",
-    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "timestamp": "2026-03-30T09:05:52.953120+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 44 errors in a window of 100 log entries starting at index 1182 (approx. 2005-07-26T19:26:11.720872).",
     "sample_errors": [
@@ -158,7 +158,7 @@
     "source": "data/BGL.log",
     "error_count": 25,
     "incident_id": "cba277ab73480271c83ab14e58770954",
-    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "timestamp": "2026-03-30T09:05:52.954127+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 25 errors in a window of 100 log entries starting at index 1232 (approx. 2005-08-09T18:25:55.113195).",
     "sample_errors": [
@@ -175,7 +175,7 @@
     "source": "data/BGL.log",
     "error_count": 20,
     "incident_id": "ee21a971172c2a42c3945858c50713a7",
-    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "timestamp": "2026-03-30T09:05:52.954127+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1311 (approx. 2005-08-26T12:24:56.862775).",
     "sample_errors": [
@@ -192,7 +192,7 @@
     "source": "data/BGL.log",
     "error_count": 59,
     "incident_id": "65f5d2ce8d8d9a23eebd846977590886",
-    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "timestamp": "2026-03-30T09:05:52.954127+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 59 errors in a window of 100 log entries starting at index 1361 (approx. 2005-08-28T03:11:54.456031).",
     "sample_errors": [
@@ -209,7 +209,7 @@
     "source": "data/BGL.log",
     "error_count": 52,
     "incident_id": "3976ce5b3e19dcf45bb6a52910b50f7a",
-    "timestamp": "2026-03-04T10:25:37.542193+00:00",
+    "timestamp": "2026-03-30T09:05:52.955586+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 52 errors in a window of 100 log entries starting at index 1411 (approx. 2005-09-19T11:28:09.693945).",
     "sample_errors": [
@@ -226,7 +226,7 @@
     "source": "data/BGL.log",
     "error_count": 21,
     "incident_id": "f5491880ff200d76d8199cdf0964d3b5",
-    "timestamp": "2026-03-04T10:25:37.546333+00:00",
+    "timestamp": "2026-03-30T09:05:52.955586+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 21 errors in a window of 100 log entries starting at index 1461 (approx. 2005-09-24T13:04:00.023717).",
     "sample_errors": [
@@ -243,7 +243,7 @@
     "source": "data/BGL.log",
     "error_count": 20,
     "incident_id": "d32a14556f5b9995b02e1916e5d71bcd",
-    "timestamp": "2026-03-04T10:25:37.546333+00:00",
+    "timestamp": "2026-03-30T09:05:52.956595+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1688 (approx. 2005-11-04T18:02:11.252563).",
     "sample_errors": [
@@ -260,7 +260,7 @@
     "source": "data/BGL.log",
     "error_count": 22,
     "incident_id": "54e1fbcb2f59a93b547e5c080ddf7573",
-    "timestamp": "2026-03-04T10:25:37.546333+00:00",
+    "timestamp": "2026-03-30T09:05:52.956595+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 22 errors in a window of 100 log entries starting at index 1738 (approx. 2005-11-10T12:11:52.704752).",
     "sample_errors": [
@@ -277,7 +277,7 @@
     "source": "data/BGL.log",
     "error_count": 20,
     "incident_id": "1998cdb5689783cc14e64240a82ddac0",
-    "timestamp": "2026-03-04T10:25:37.549330+00:00",
+    "timestamp": "2026-03-30T09:05:52.956595+00:00",
     "window_seconds": 100,
     "details": "Error burst detected: 20 errors in a window of 100 log entries starting at index 1882 (approx. 2005-12-01T08:33:03.466525).",
     "sample_errors": [

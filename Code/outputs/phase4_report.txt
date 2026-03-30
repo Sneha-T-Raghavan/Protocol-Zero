@@ -1,0 +1,192 @@
+======================================================================
+  PROTOCOL ZERO — PHASE 4 CORRELATED REPORT
+======================================================================
+  Total groups : 15
+  Total incidents: 17
+
+── Group 1: ea71f94322b7 ──
+  Incidents        : 1
+  Time span        : 2005-06-05 05:23:26.239153+00:00 → 2005-06-05 05:23:26.239153+00:00
+  Components       : APP, KERNEL
+  Nodes            : R04, R04-M1-N4-I:J18-U11, R11, R11-M0-NC-I:J18-U01, R27
+  Cascade chain    : APP → KERNEL
+  Confidence       : 59%
+  Root cause       : Burst shape: SPIKE (peak density 50.0%)
+                     | Hotspot component: KERNEL (4 errors)
+                     | Most affected node: R30-M0-N9-C:J16-U01 (3 errors)
+                     | Error velocity: 6.6 errors/100 log entries
+
+── Group 2: abec2d79396d ──
+  Incidents        : 1
+  Time span        : 2005-06-07 06:05:49.961844+00:00 → 2005-06-07 06:05:49.961844+00:00
+  Components       : APP, KERNEL
+  Nodes            : R11, R11-M0-NC-I:J18-U01, R27, R27-M1-N4-I:J18-U01, R30
+  Cascade chain    : APP → KERNEL
+  Confidence       : 76%
+  Root cause       : Burst shape: SPIKE (peak density 100.0%)
+                     | Hotspot component: KERNEL (57 errors)
+                     | Most affected node: R30-M0-N9-C:J16-U01 (56 errors)
+                     | Error velocity: 39.33 errors/100 log entries
+
+── Group 3: 9a8baad2d06e ──
+  Incidents        : 1
+  Time span        : 2005-06-11 19:12:56.115636+00:00 → 2005-06-11 19:12:56.115636+00:00
+  Components       : APP, KERNEL
+  Nodes            : R01, R10, R10-M1-N5-C:J15-U11, R11, R11-M0-NC-I:J18-U01
+  Cascade chain    : KERNEL → APP
+  Confidence       : 78%
+  Root cause       : Burst shape: SUSTAINED (peak density 96.0%)
+                     | Hotspot component: KERNEL (74 errors)
+                     | Most affected node: R30-M0-N9-C:J16-U01 (60 errors)
+                     | Error velocity: 50.0 errors/100 log entries
+
+── Group 4: 611a135f48c3 ──
+  Incidents        : 3
+  Time span        : 2005-06-13 17:41:57.658353+00:00 → 2005-06-14 10:52:08.434393+00:00
+  Components       : APP, KERNEL
+  Nodes            : R00-M0-N0-C:J13-U11, R02-M1-NC-C:J08-U11, R10-M1-N5-C:J15-U11, R11-M0-N7-C:J10-U01, R13-M0-NA-C:J15-U01
+  Cascade chain    : KERNEL → APP
+  Confidence       : 83%
+  Root cause       : Burst shape: SUSTAINED (peak density 100.0%)
+                     | Hotspot component: KERNEL (143 errors)
+                     | Most affected node: R30-M0-N9-C:J16-U01 (34 errors)
+                     | Error velocity: 95.33 errors/100 log entries
+
+── Group 5: dbc98509980d ──
+  Incidents        : 1
+  Time span        : 2005-07-23 17:47:06.550385+00:00 → 2005-07-23 17:47:06.550385+00:00
+  Components       : APP, DISCOVERY, HARDWARE, KERNEL, MMCS
+  Nodes            : R00, R00-M0-N2, R23-M0-N7, R24, R44
+  Cascade chain    : HARDWARE → DISCOVERY → MMCS → KERNEL → APP
+  Confidence       : 70%
+  Root cause       : Burst shape: SUSTAINED (peak density 54.0%)
+                     | Hotspot component: APP (21 errors)
+                     | Most affected node: NULL (9 errors)
+                     | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL
+                     | Error velocity: 28.67 errors/100 log entries
+
+── Group 6: 5237afe0e6b9 ──
+  Incidents        : 1
+  Time span        : 2005-07-26 19:26:11.720872+00:00 → 2005-07-26 19:26:11.720872+00:00
+  Components       : APP, DISCOVERY, HARDWARE, KERNEL, MMCS
+  Nodes            : R00, R00-M0-N2, R23-M0-N7, R24, R44
+  Cascade chain    : HARDWARE → DISCOVERY → MMCS → KERNEL → APP
+  Confidence       : 70%
+  Root cause       : Burst shape: SUSTAINED (peak density 54.0%)
+                     | Hotspot component: APP (21 errors)
+                     | Most affected node: NULL (9 errors)
+                     | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL
+                     | Error velocity: 28.67 errors/100 log entries
+
+── Group 7: 6847632d27d0 ──
+  Incidents        : 1
+  Time span        : 2005-08-09 18:25:55.113195+00:00 → 2005-08-09 18:25:55.113195+00:00
+  Components       : APP, DISCOVERY, HARDWARE, KERNEL, MMCS
+  Nodes            : R00, R00-M0-N2, R23-M0-N7, R24, R44
+  Cascade chain    : HARDWARE → DISCOVERY → MMCS → KERNEL → APP
+  Confidence       : 71%
+  Root cause       : Burst shape: SPIKE (peak density 64.0%)
+                     | Hotspot component: APP (22 errors)
+                     | Most affected node: NULL (9 errors)
+                     | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL
+                     | Error velocity: 29.33 errors/100 log entries
+
+── Group 8: eb585522e7c8 ──
+  Incidents        : 1
+  Time span        : 2005-08-26 12:24:56.862775+00:00 → 2005-08-26 12:24:56.862775+00:00
+  Components       : APP, DISCOVERY, HARDWARE, KERNEL, MMCS
+  Nodes            : R00, R00-M0-N2, R23-M0-N7, R24, R44
+  Cascade chain    : HARDWARE → DISCOVERY → MMCS → KERNEL → APP
+  Confidence       : 71%
+  Root cause       : Burst shape: SUSTAINED (peak density 46.0%)
+                     | Hotspot component: APP (22 errors)
+                     | Most affected node: NULL (9 errors)
+                     | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL
+                     | Error velocity: 29.33 errors/100 log entries
+
+── Group 9: fed335eeeb1f ──
+  Incidents        : 1
+  Time span        : 2005-08-28 03:11:54.456031+00:00 → 2005-08-28 03:11:54.456031+00:00
+  Components       : APP, DISCOVERY, KERNEL, MMCS
+  Nodes            : R01, R11, R11-M1-N7, R25-M1-N4-I:J18-U01, R27
+  Cascade chain    : DISCOVERY → KERNEL → APP → MMCS
+  Confidence       : 76%
+  Root cause       : Burst shape: SUSTAINED (peak density 84.0%)
+                     | Hotspot component: MMCS (26 errors)
+                     | Most affected node: NULL (26 errors)
+                     | Cascade detected: DISCOVERY → KERNEL → APP → MMCS
+                     | Error velocity: 37.33 errors/100 log entries
+
+── Group 10: 502389a26735 ──
+  Incidents        : 1
+  Time span        : 2005-09-19 11:28:09.693945+00:00 → 2005-09-19 11:28:09.693945+00:00
+  Components       : APP, DISCOVERY, KERNEL, MMCS
+  Nodes            : R01, R16, R25-M1-N4-I:J18-U01, R27, R42-M1-NC-I:J18-U11
+  Cascade chain    : KERNEL → APP → DISCOVERY → MMCS
+  Confidence       : 78%
+  Root cause       : Burst shape: SUSTAINED (peak density 70.0%)
+                     | Hotspot component: APP (27 errors)
+                     | Most affected node: NULL (26 errors)
+                     | Cascade detected: KERNEL → APP → DISCOVERY → MMCS
+                     | Error velocity: 42.67 errors/100 log entries
+
+── Group 11: ff0581016cf3 ──
+  Incidents        : 1
+  Time span        : 2005-09-24 13:04:00.023717+00:00 → 2005-09-24 13:04:00.023717+00:00
+  Components       : APP, DISCOVERY, KERNEL, MMCS
+  Nodes            : R01, R01-M1-N4-I:J18-U11, R16, R24-M1-NC-I:J18-U01, R27
+  Cascade chain    : KERNEL → APP → DISCOVERY → MMCS
+  Confidence       : 80%
+  Root cause       : Burst shape: SUSTAINED (peak density 72.0%)
+                     | Hotspot component: APP (39 errors)
+                     | Most affected node: NULL (26 errors)
+                     | Cascade detected: KERNEL → APP → DISCOVERY → MMCS
+                     | Error velocity: 48.0 errors/100 log entries
+
+── Group 12: 8355497def23 ──
+  Incidents        : 1
+  Time span        : 2005-11-04 18:02:11.252563+00:00 → 2005-11-04 18:02:11.252563+00:00
+  Components       : APP, KERNEL
+  Nodes            : R46, R50, R50-M0-N4-I:J18-U01, R57, R60
+  Cascade chain    : APP → KERNEL
+  Confidence       : 61%
+  Root cause       : Burst shape: SPIKE (peak density 20.0%)
+                     | Hotspot component: KERNEL (9 errors)
+                     | Error velocity: 8.0 errors/100 log entries
+
+── Group 13: 4c24d612fbd6 ──
+  Incidents        : 1
+  Time span        : 2005-11-10 12:11:52.704752+00:00 → 2005-11-10 12:11:52.704752+00:00
+  Components       : APP, DISCOVERY, HARDWARE, KERNEL, MMCS
+  Nodes            : R00, R00-M0-N2, R23-M0-N7, R24, R44
+  Cascade chain    : HARDWARE → DISCOVERY → MMCS → KERNEL → APP
+  Confidence       : 72%
+  Root cause       : Burst shape: SUSTAINED (peak density 48.0%)
+                     | Hotspot component: APP (22 errors)
+                     | Most affected node: NULL (9 errors)
+                     | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL
+                     | Error velocity: 30.0 errors/100 log entries
+
+── Group 14: 13e97982d82f ──
+  Incidents        : 1
+  Time span        : 2005-12-01 08:33:03.466525+00:00 → 2005-12-01 08:33:03.466525+00:00
+  Components       : APP, KERNEL
+  Nodes            : R03, R03-M0-N7-C:J07-U01, R20, R46-M0-N8-I:J18-U11, R52-M1-NA-C:J03-U01
+  Cascade chain    : KERNEL → APP
+  Confidence       : 62%
+  Root cause       : Burst shape: SUSTAINED (peak density 33.3%)
+                     | Hotspot component: APP (17 errors)
+                     | Error velocity: 17.69 errors/100 log entries
+
+── Group 15: f7c0ec7f0332 ──
+  Incidents        : 1
+  Time span        : 2026-03-30 09:05:52.928098+00:00 → 2026-03-30 09:05:52.928098+00:00
+  Components       : APP, DISCOVERY, HARDWARE, KERNEL, MMCS
+  Nodes            : R16-M1-NC-I:J18-U11, R20, R24, R25-M1-N3-C:J16-U01, R26
+  Cascade chain    : APP → KERNEL → DISCOVERY → HARDWARE → MMCS
+  Confidence       : 83%
+  Root cause       : Burst shape: FLOOD (peak density 100.0%)
+                     | Hotspot component: KERNEL (240 errors)
+                     | Most affected node: R30-M0-N9-C:J16-U01 (60 errors)
+                     | Cascade detected: APP → KERNEL → DISCOVERY → HARDWARE
+                     | Error velocity: 19.75 errors/100 log entries

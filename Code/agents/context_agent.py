@@ -1,26 +1,21 @@
 """
 agents/context_agent.py
 ------------------------
-Context Extraction Agent — Phase 3, Protocol Zero.
+Protocol Zero — Phase 3.5 upgrade.
 
-Responsibility:
-    Dataset-aware context extraction. Understands the specific semantics
-    of the log source (BGL, generic, etc.) and extracts contextual signals
-    that neither the Log Investigation Agent nor the Infra Agent can see:
+Changes from Phase 3:
+    Three new BGL-specific analysis methods:
+        detect_node_failure_patterns()   — rack/midplane clusters with persistent failure
+        detect_component_hotspots()      — components far above baseline error rate
+        detect_cluster_failures()        — job/MPI group failures from log messages
 
-    For BGL logs:
-        - Ground-truth label correlation (what % of errors have anomaly labels?)
-        - Node rack / midplane topology (R02-M1 style naming)
-        - Component co-failure analysis (which components fail together?)
-        - BGL-specific failure categories (ECC memory, CIOD, DMA, Torus, etc.)
+    These are called from _investigate_bgl() and added to supporting_data under
+    the keys "node_failure_patterns", "component_hotspots", "cluster_failures".
 
-    For generic logs:
-        - Temporal gap analysis (are there suspicious log silences?)
-        - Level transition analysis (INFO → ERROR sequences)
-        - Message deduplication ratio (are there flood patterns?)
+    The BGL hypothesis and findings builders are extended to incorporate
+    these new signals when available.
 
-    The context agent enriches the investigation with dataset-specific
-    knowledge that other agents intentionally ignore.
+    All Phase 3 logic is preserved unchanged.
 """
 
 import re
@@ -33,7 +28,6 @@ from agents.rca_signal import RCASignal
 
 ERROR_LEVELS = {"ERROR", "CRITICAL", "FATAL"}
 
-# BGL-specific failure category keywords mapped to human-readable labels
 BGL_FAILURE_CATEGORIES = {
     "memory":     ["memory", "ecc", "ddr", "dimm", "correctable", "uncorrectable"],
     "network":    ["torus", "link", "network", "routing", "packet"],
@@ -44,18 +38,13 @@ BGL_FAILURE_CATEGORIES = {
     "dma":        ["dma", "crossbar", "register"],
 }
 
-# BGL node topology regex: R<rack>-M<midplane>-N<node>-...
-_BGL_NODE_RE = re.compile(r"R(\d+)-M(\d+)")
+_BGL_NODE_RE  = re.compile(r"R(\d+)-M(\d+)")
+_JOB_ID_RE    = re.compile(r"(?i)(?:job|jobid)\s*[=:]?\s*(\d+)")
+_RANK_RE      = re.compile(r"(?i)rank\s+(\d+)")
+_MPI_RE       = re.compile(r"(?i)mpi")
 
 
 class ContextAgent(BaseAgent):
-    """
-    Dataset-aware context extraction agent.
-
-    Extracts BGL-specific signals when component/node/label fields are
-    present, and falls back to generic temporal/structural analysis
-    for plain log formats.
-    """
 
     name        = "ContextAgent"
     description = "Dataset-aware context extraction, BGL topology & label correlation"
@@ -65,8 +54,8 @@ class ContextAgent(BaseAgent):
     def investigate(self, incident: Incident, parsed_logs: List[Dict]) -> RCASignal:
         print(f"  [{self.name}] Investigating incident {incident.incident_id[:8]} ...")
 
-        is_bgl      = self._detect_bgl_format(parsed_logs)
-        scoped_logs  = self._scope_logs(incident, parsed_logs)
+        is_bgl        = self._detect_bgl_format(parsed_logs)
+        scoped_logs   = self._scope_logs(incident, parsed_logs)
         error_entries = [e for e in scoped_logs if e["level"] in ERROR_LEVELS]
 
         if is_bgl:
@@ -74,7 +63,7 @@ class ContextAgent(BaseAgent):
         else:
             return self._investigate_generic(incident, scoped_logs, error_entries)
 
-    # ── BGL-specific investigation ────────────────────────────────────────────
+    # ── BGL investigation (Phase 3 + Phase 3.5 additions) ────────────────────
 
     def _investigate_bgl(
         self,
@@ -82,31 +71,44 @@ class ContextAgent(BaseAgent):
         parsed_logs:   List[Dict],
         error_entries: List[Dict],
     ) -> RCASignal:
+        # Phase 3 analyses
         label_stats       = self._analyse_labels(parsed_logs)
         rack_stats        = self._analyse_rack_topology(error_entries)
         failure_cats      = self._categorise_bgl_failures(error_entries)
         cofailure         = self._detect_component_cofailure(parsed_logs)
         level_transitions = self._analyse_level_transitions(parsed_logs)
 
-        top_cats   = sorted(failure_cats.items(), key=lambda x: -x[1])[:4]
-        top_racks  = rack_stats["top_racks"][:3]
+        top_cats  = sorted(failure_cats.items(), key=lambda x: -x[1])[:4]
+        top_racks = rack_stats["top_racks"][:3]
+
+        # Phase 3.5 additions
+        node_failure_patterns = self.detect_node_failure_patterns(error_entries)
+        component_hotspots    = self.detect_component_hotspots(parsed_logs, error_entries)
+        cluster_failures      = self.detect_cluster_failures(error_entries)
 
         hypothesis = self._build_bgl_hypothesis(
-            top_cats, top_racks, rack_stats, cofailure, label_stats
+            top_cats, top_racks, rack_stats, cofailure, label_stats,
+            node_failure_patterns, component_hotspots, cluster_failures,
         )
-        findings   = self._build_bgl_findings(
-            label_stats, rack_stats, top_cats, cofailure, level_transitions
+        findings = self._build_bgl_findings(
+            label_stats, rack_stats, top_cats, cofailure, level_transitions,
+            node_failure_patterns, component_hotspots, cluster_failures,
         )
-        recs       = self._build_bgl_recommendations(top_cats, rack_stats, cofailure)
+        recs       = self._build_bgl_recommendations(top_cats, rack_stats, cofailure,
+                                                     node_failure_patterns, cluster_failures)
         confidence = self._score_bgl_confidence(error_entries, label_stats, top_cats)
 
         supporting = {
-            "dataset_format":      "BGL",
-            "label_correlation":   label_stats,
-            "rack_topology":       rack_stats,
-            "failure_categories":  [{"category": c, "count": n} for c, n in top_cats],
-            "component_cofailure": cofailure,
-            "level_transitions":   level_transitions,
+            "dataset_format":        "BGL",
+            "label_correlation":     label_stats,
+            "rack_topology":         rack_stats,
+            "failure_categories":    [{"category": c, "count": n} for c, n in top_cats],
+            "component_cofailure":   cofailure,
+            "level_transitions":     level_transitions,
+            # Phase 3.5
+            "node_failure_patterns": node_failure_patterns,
+            "component_hotspots":    component_hotspots,
+            "cluster_failures":      cluster_failures,
         }
 
         signal = RCASignal(
@@ -121,10 +123,187 @@ class ContextAgent(BaseAgent):
         print(f"    → {signal}")
         return signal
 
+    # ── Phase 3.5: new dataset-aware methods ─────────────────────────────────
+
+    def detect_node_failure_patterns(self, error_entries: List[Dict]) -> Dict:
+        """
+        Identify racks/midplanes with persistently high error rates.
+
+        A "persistent" failure is defined as a rack or midplane that appears
+        in errors in more than one distinct component (suggesting the problem
+        is hardware/location-based rather than software-based).
+
+        Returns:
+            {
+                "persistent_racks":   [{"rack", "error_count", "components"}],
+                "hotspot_midplanes":  [{"midplane", "error_count"}],
+                "pattern_type":       "single_rack" | "multi_rack" | "none"
+            }
+        """
+        rack_components: Dict[str, Set[str]] = defaultdict(set)
+        rack_counts:     Counter              = Counter()
+        midplane_counts: Counter              = Counter()
+
+        for e in error_entries:
+            node = e.get("node", "")
+            comp = e.get("component", "")
+            m = _BGL_NODE_RE.match(node)
+            if m:
+                rack     = f"R{m.group(1)}"
+                midplane = f"R{m.group(1)}-M{m.group(2)}"
+                rack_counts[rack] += 1
+                midplane_counts[midplane] += 1
+                if comp:
+                    rack_components[rack].add(comp)
+
+        # Persistent = rack has errors in 2+ distinct components
+        persistent = [
+            {
+                "rack":        rack,
+                "error_count": rack_counts[rack],
+                "components":  sorted(rack_components[rack]),
+            }
+            for rack, comps in rack_components.items()
+            if len(comps) >= 2
+        ]
+        persistent.sort(key=lambda x: -x["error_count"])
+
+        hotspot_midplanes = [
+            {"midplane": mp, "error_count": cnt}
+            for mp, cnt in midplane_counts.most_common(5)
+        ]
+
+        if len(persistent) == 0:
+            pattern_type = "none"
+        elif len(persistent) == 1:
+            pattern_type = "single_rack"
+        else:
+            pattern_type = "multi_rack"
+
+        return {
+            "persistent_racks":  persistent[:5],
+            "hotspot_midplanes": hotspot_midplanes,
+            "pattern_type":      pattern_type,
+        }
+
+    def detect_component_hotspots(
+        self,
+        all_logs:      List[Dict],
+        error_entries: List[Dict],
+    ) -> List[Dict]:
+        """
+        Identify components whose error rate far exceeds their baseline
+        log volume rate (i.e., they appear in errors disproportionately).
+
+        A component is a "hotspot" if its error_rate / baseline_rate > 2.0.
+        (Baseline = fraction of all log entries from that component.)
+
+        Returns:
+            [{"component", "error_count", "total_count",
+              "error_rate_pct", "baseline_rate_pct", "hotspot_ratio"}]
+            sorted by hotspot_ratio descending.
+        """
+        total_log_count: Counter = Counter()
+        error_count:     Counter = Counter()
+
+        for e in all_logs:
+            comp = e.get("component")
+            if comp:
+                total_log_count[comp] += 1
+
+        for e in error_entries:
+            comp = e.get("component")
+            if comp:
+                error_count[comp] += 1
+
+        total_logs = max(len(all_logs), 1)
+        total_errors = max(len(error_entries), 1)
+        hotspots = []
+
+        for comp, err_cnt in error_count.items():
+            total_cnt    = total_log_count.get(comp, 1)
+            err_rate     = err_cnt / total_errors
+            baseline     = total_cnt / total_logs
+            ratio        = err_rate / max(baseline, 1e-9)
+
+            if ratio > 2.0:
+                hotspots.append({
+                    "component":        comp,
+                    "error_count":      err_cnt,
+                    "total_count":      total_cnt,
+                    "error_rate_pct":   round(err_rate * 100, 2),
+                    "baseline_rate_pct": round(baseline * 100, 2),
+                    "hotspot_ratio":    round(ratio, 2),
+                })
+
+        hotspots.sort(key=lambda x: -x["hotspot_ratio"])
+        return hotspots[:6]
+
+    def detect_cluster_failures(self, error_entries: List[Dict]) -> Dict:
+        """
+        Detect job / MPI communicator group failures from error messages.
+
+        Extracts job IDs, MPI ranks, and failure patterns that suggest
+        an entire compute job or job group was affected (as opposed to
+        isolated node hardware failures).
+
+        Returns:
+            {
+                "job_ids_affected":   [str],   # unique job IDs found in error msgs
+                "mpi_failure":        bool,     # True if MPI errors detected
+                "affected_rank_count": int,     # number of distinct MPI ranks
+                "job_failure_messages": [str],  # representative messages
+                "failure_scope":      "none" | "single_job" | "multi_job" | "mpi_communicator"
+            }
+        """
+        job_ids:  Set[str] = set()
+        ranks:    Set[str] = set()
+        mpi_msgs: List[str] = []
+        job_msgs: List[str] = []
+
+        for e in error_entries:
+            msg = e.get("message", "")
+
+            m_job = _JOB_ID_RE.search(msg)
+            if m_job:
+                job_ids.add(m_job.group(1))
+                if len(job_msgs) < 3:
+                    job_msgs.append(msg[:100])
+
+            m_rank = _RANK_RE.search(msg)
+            if m_rank:
+                ranks.add(m_rank.group(1))
+
+            if _MPI_RE.search(msg):
+                if len(mpi_msgs) < 3:
+                    mpi_msgs.append(msg[:100])
+
+        mpi_detected = bool(mpi_msgs)
+
+        if not job_ids and not mpi_detected:
+            scope = "none"
+        elif mpi_detected and len(ranks) > 4:
+            scope = "mpi_communicator"
+        elif len(job_ids) > 1:
+            scope = "multi_job"
+        elif len(job_ids) == 1:
+            scope = "single_job"
+        else:
+            scope = "none"
+
+        return {
+            "job_ids_affected":     sorted(job_ids),
+            "mpi_failure":          mpi_detected,
+            "affected_rank_count":  len(ranks),
+            "job_failure_messages": job_msgs[:3] or mpi_msgs[:3],
+            "failure_scope":        scope,
+        }
+
+    # ── Phase 3 BGL helpers (extended for 3.5 signals) ───────────────────────
+
     def _analyse_labels(self, parsed_logs: List[Dict]) -> Dict:
-        """Correlate BGL anomaly labels with detected error levels."""
-        total        = len(parsed_logs)
-        labelled     = sum(1 for e in parsed_logs if e.get("is_anomaly"))
+        total          = len(parsed_logs)
+        labelled       = sum(1 for e in parsed_logs if e.get("is_anomaly"))
         error_labelled = sum(
             1 for e in parsed_logs
             if e.get("is_anomaly") and e["level"] in ERROR_LEVELS
@@ -143,32 +322,28 @@ class ContextAgent(BaseAgent):
         }
 
     def _analyse_rack_topology(self, error_entries: List[Dict]) -> Dict:
-        """Extract which racks and midplanes are generating errors."""
-        rack_counter = Counter()
+        rack_counter     = Counter()
         midplane_counter = Counter()
         for e in error_entries:
             node = e.get("node", "")
             m = _BGL_NODE_RE.match(node)
             if m:
-                rack      = f"R{m.group(1)}"
-                midplane  = f"R{m.group(1)}-M{m.group(2)}"
+                rack     = f"R{m.group(1)}"
+                midplane = f"R{m.group(1)}-M{m.group(2)}"
                 rack_counter[rack] += 1
                 midplane_counter[midplane] += 1
 
         total_racks = len(rack_counter)
-        top_racks   = rack_counter.most_common(5)
-
         return {
             "total_racks_affected": total_racks,
-            "top_racks":            [{"rack": r, "errors": c} for r, c in top_racks],
-            "top_midplanes":        [{"midplane": m, "errors": c}
-                                     for m, c in midplane_counter.most_common(3)],
-            "spread":               "localised" if total_racks <= 2 else
-                                    "moderate"  if total_racks <= 5 else "wide",
+            "top_racks":   [{"rack": r, "errors": c} for r, c in rack_counter.most_common(5)],
+            "top_midplanes": [{"midplane": m, "errors": c}
+                              for m, c in midplane_counter.most_common(3)],
+            "spread": "localised" if total_racks <= 2 else
+                      "moderate"  if total_racks <= 5 else "wide",
         }
 
     def _categorise_bgl_failures(self, error_entries: List[Dict]) -> Counter:
-        """Map error messages to BGL failure category buckets."""
         cats: Counter = Counter()
         for e in error_entries:
             msg = e.get("message", "").lower()
@@ -183,21 +358,16 @@ class ContextAgent(BaseAgent):
         return cats
 
     def _detect_component_cofailure(self, parsed_logs: List[Dict]) -> Dict:
-        """
-        Detect which pairs of components fail within close proximity (50 entries).
-        Co-failure pairs suggest causal relationships.
-        """
         window = 50
-        pairs: Counter = Counter()
+        pairs:  Counter = Counter()
         for i, e in enumerate(parsed_logs):
             if e["level"] not in ERROR_LEVELS:
                 continue
             comp_a = e.get("component")
             if not comp_a:
                 continue
-            nearby = parsed_logs[i+1: i+window]
             nearby_comps: Set[str] = set()
-            for nb in nearby:
+            for nb in parsed_logs[i+1: i+window]:
                 if nb["level"] in ERROR_LEVELS:
                     comp_b = nb.get("component")
                     if comp_b and comp_b != comp_a and comp_b not in nearby_comps:
@@ -214,16 +384,18 @@ class ContextAgent(BaseAgent):
         }
 
     def _analyse_level_transitions(self, parsed_logs: List[Dict]) -> Dict:
-        """Count INFO→ERROR, WARNING→ERROR, ERROR→CRITICAL transitions."""
         transitions: Counter = Counter()
         for i in range(1, len(parsed_logs)):
-            prev_level = parsed_logs[i-1]["level"]
-            curr_level = parsed_logs[i]["level"]
-            if curr_level in ERROR_LEVELS and prev_level not in ERROR_LEVELS:
-                transitions[f"{prev_level}→{curr_level}"] += 1
+            prev = parsed_logs[i-1]["level"]
+            curr = parsed_logs[i]["level"]
+            if curr in ERROR_LEVELS and prev not in ERROR_LEVELS:
+                transitions[f"{prev}→{curr}"] += 1
         return dict(transitions.most_common(8))
 
-    def _build_bgl_hypothesis(self, top_cats, top_racks, rack_stats, cofailure, label_stats):
+    def _build_bgl_hypothesis(
+        self, top_cats, top_racks, rack_stats, cofailure, label_stats,
+        node_failure_patterns=None, component_hotspots=None, cluster_failures=None,
+    ) -> str:
         parts = []
         if top_cats:
             cat, cnt = top_cats[0]
@@ -237,10 +409,28 @@ class ContextAgent(BaseAgent):
             parts.append(f"Strongest co-failure: {pair}")
         coverage = label_stats.get("gt_coverage", 0)
         if coverage > 80:
-            parts.append(f"High ground-truth label coverage ({coverage}%) confirms systematic failure")
+            parts.append(f"High ground-truth label coverage ({coverage}%)")
+
+        # Phase 3.5 additions
+        if node_failure_patterns and node_failure_patterns.get("pattern_type") != "none":
+            ptype = node_failure_patterns["pattern_type"].replace("_", " ").upper()
+            parts.append(f"Node failure pattern: {ptype}")
+        if component_hotspots:
+            hs = component_hotspots[0]
+            parts.append(
+                f"Component hotspot: {hs['component']} "
+                f"({hs['hotspot_ratio']:.1f}× above baseline)"
+            )
+        if cluster_failures and cluster_failures.get("failure_scope") not in ("none", None):
+            scope = cluster_failures["failure_scope"].replace("_", " ").upper()
+            parts.append(f"Cluster failure scope: {scope}")
+
         return " | ".join(parts) if parts else "Insufficient BGL context for hypothesis."
 
-    def _build_bgl_findings(self, label_stats, rack_stats, top_cats, cofailure, transitions):
+    def _build_bgl_findings(
+        self, label_stats, rack_stats, top_cats, cofailure, transitions,
+        node_failure_patterns=None, component_hotspots=None, cluster_failures=None,
+    ) -> List[str]:
         findings = []
         findings.append(
             f"BGL ground-truth labels: {label_stats['labelled_anomalies']} anomalous lines "
@@ -264,9 +454,44 @@ class ContextAgent(BaseAgent):
         if transitions:
             trans_str = ", ".join(f"{k}({v})" for k, v in list(transitions.items())[:4])
             findings.append(f"Log level transition events: {trans_str}")
+
+        # Phase 3.5 additions
+        if node_failure_patterns:
+            persistent = node_failure_patterns.get("persistent_racks", [])
+            if persistent:
+                rack_strs = ", ".join(
+                    f"{r['rack']}(errs={r['error_count']}, comps={r['components']})"
+                    for r in persistent[:3]
+                )
+                findings.append(f"Persistent rack failures (multi-component): {rack_strs}")
+            hotspot_mps = node_failure_patterns.get("hotspot_midplanes", [])
+            if hotspot_mps:
+                mp_str = ", ".join(f"{h['midplane']}({h['error_count']})" for h in hotspot_mps[:3])
+                findings.append(f"Hotspot midplanes: {mp_str}")
+
+        if component_hotspots:
+            hs_str = ", ".join(
+                f"{h['component']}({h['hotspot_ratio']:.1f}×)"
+                for h in component_hotspots[:4]
+            )
+            findings.append(f"Disproportionate component error rates (hotspots): {hs_str}")
+
+        if cluster_failures:
+            scope = cluster_failures.get("failure_scope", "none")
+            if scope != "none":
+                findings.append(
+                    f"Cluster/job failure detected: scope={scope.upper()}, "
+                    f"jobs={cluster_failures.get('job_ids_affected', [])}, "
+                    f"MPI={cluster_failures.get('mpi_failure', False)}, "
+                    f"ranks_affected={cluster_failures.get('affected_rank_count', 0)}"
+                )
+
         return findings
 
-    def _build_bgl_recommendations(self, top_cats, rack_stats, cofailure):
+    def _build_bgl_recommendations(
+        self, top_cats, rack_stats, cofailure,
+        node_failure_patterns=None, cluster_failures=None,
+    ) -> List[str]:
         recs = []
         if top_cats:
             cat = top_cats[0][0]
@@ -282,23 +507,54 @@ class ContextAgent(BaseAgent):
                 recs.append("Investigate job scheduler and MPI communicator health — application-level failures.")
             else:
                 recs.append(f"Investigate '{cat}' subsystem — dominant failure category.")
+
         spread = rack_stats.get("spread", "")
         if spread == "localised":
             recs.append("Failure is LOCALISED — consider isolating the affected rack for hardware inspection.")
         elif spread == "wide":
             recs.append("Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).")
+
         if cofailure["top_cofailure_pairs"]:
             pair = cofailure["top_cofailure_pairs"][0]["pair"]
             recs.append(f"Investigate causal link between co-failing components: {pair}")
+
+        # Phase 3.5 additions
+        if node_failure_patterns and node_failure_patterns.get("pattern_type") == "single_rack":
+            persistent = node_failure_patterns.get("persistent_racks", [])
+            if persistent:
+                recs.append(
+                    f"Rack {persistent[0]['rack']} shows multi-component failure — "
+                    "escalate to hardware team for physical inspection."
+                )
+        elif node_failure_patterns and node_failure_patterns.get("pattern_type") == "multi_rack":
+            recs.append(
+                "Multiple racks show persistent failures — "
+                "likely systemic: check shared cooling, power, or fabric infrastructure."
+            )
+
+        if cluster_failures:
+            scope = cluster_failures.get("failure_scope", "none")
+            if scope == "mpi_communicator":
+                recs.append(
+                    "MPI communicator failure detected — resubmit affected jobs after "
+                    "resolving the underlying hardware fault; review MPI error logs."
+                )
+            elif scope in ("single_job", "multi_job"):
+                jobs = cluster_failures.get("job_ids_affected", [])
+                recs.append(
+                    f"Job failure detected (job IDs: {jobs}) — "
+                    "check job scheduler logs and node health before resubmitting."
+                )
+
         return recs
 
-    def _score_bgl_confidence(self, error_entries, label_stats, top_cats):
+    def _score_bgl_confidence(self, error_entries, label_stats, top_cats) -> float:
         volume   = min(len(error_entries) / 50.0, 1.0)
         coverage = label_stats.get("gt_coverage", 0) / 100.0
         has_cats = 0.9 if top_cats else 0.3
         return round(volume * 0.3 + coverage * 0.4 + has_cats * 0.3, 2)
 
-    # ── Generic investigation ─────────────────────────────────────────────────
+    # ── Generic investigation (Phase 3 — unchanged) ───────────────────────────
 
     def _investigate_generic(
         self,
@@ -306,9 +562,9 @@ class ContextAgent(BaseAgent):
         parsed_logs:   List[Dict],
         error_entries: List[Dict],
     ) -> RCASignal:
-        silence_gaps  = self._detect_log_silences(parsed_logs)
-        transitions   = self._analyse_level_transitions(parsed_logs)
-        dedup_ratio   = self._compute_dedup_ratio(error_entries)
+        silence_gaps = self._detect_log_silences(parsed_logs)
+        transitions  = self._analyse_level_transitions(parsed_logs)
+        dedup_ratio  = self._compute_dedup_ratio(error_entries)
 
         hypothesis = (
             f"Generic log context: {len(error_entries)} errors detected. "
@@ -321,7 +577,9 @@ class ContextAgent(BaseAgent):
             f"Level transitions into error: {transitions}",
         ]
         if silence_gaps:
-            findings.append(f"Detected {len(silence_gaps)} log silence gap(s) > 10 entries: {silence_gaps[:3]}")
+            findings.append(
+                f"Detected {len(silence_gaps)} log silence gap(s) > 10 entries: {silence_gaps[:3]}"
+            )
 
         signal = RCASignal(
             agent_name=self.name,
@@ -334,9 +592,9 @@ class ContextAgent(BaseAgent):
                 "Review repeated error messages for flood/loop patterns.",
             ],
             supporting_data={
-                "dataset_format":  "generic",
-                "dedup_ratio":     dedup_ratio,
-                "silence_gaps":    silence_gaps,
+                "dataset_format":    "generic",
+                "dedup_ratio":       dedup_ratio,
+                "silence_gaps":      silence_gaps,
                 "level_transitions": transitions,
             },
         )
@@ -344,7 +602,6 @@ class ContextAgent(BaseAgent):
         return signal
 
     def _detect_log_silences(self, parsed_logs: List[Dict]) -> List[int]:
-        """Detect indices where there is a gap of 10+ consecutive non-error entries."""
         gaps = []
         run = 0
         for i, e in enumerate(parsed_logs):
@@ -363,30 +620,21 @@ class ContextAgent(BaseAgent):
         return unique / len(error_entries)
 
     def _scope_logs(self, incident: Incident, parsed_logs: List[Dict]) -> List[Dict]:
-        """
-        Narrow the log corpus to the window relevant to this incident.
-        Mirrors InfraAgent._scope_logs so all agents analyse the same window.
-        For ERROR_SPIKE incidents the full corpus is used (global analysis intended).
-        """
         if incident.anomaly_type != "SLIDING_WINDOW_SPIKE" or not incident.sample_errors:
             return parsed_logs
-
         anchor_msg = incident.sample_errors[0]
         anchor_idx = None
         for i, entry in enumerate(parsed_logs):
             if anchor_msg in entry.get("message", "") or anchor_msg in entry.get("raw", ""):
                 anchor_idx = i
                 break
-
         if anchor_idx is None:
             return parsed_logs
-
         half  = 75
         start = max(0, anchor_idx - half)
         end   = min(len(parsed_logs), anchor_idx + half)
         return parsed_logs[start:end]
 
     def _detect_bgl_format(self, parsed_logs: List[Dict]) -> bool:
-        """Detect BGL format by checking for BGL-specific fields on first entries."""
         sample = parsed_logs[:10]
         return any(e.get("node") or e.get("bgl_level") for e in sample)

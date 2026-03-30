@@ -1,37 +1,35 @@
 """
 core/agent_runner.py
 ---------------------
-Protocol Zero — Phase 3: Multi-Agent Investigation Orchestrator.
+Protocol Zero — Phase 3.5 upgrade.
 
-Responsibility:
-    Receives List[Incident] + parsed_logs from Phase 2.
-    Runs all registered agents on each incident.
-    Merges per-agent RCASignals into a single InvestigationReport per incident.
-    Saves investigation reports to JSON.
+Changes from Phase 3:
+    _merge_signals() now routes through the signal_fusion pipeline:
+        normalize → weight → resolve conflicts → rank hypotheses
+
+    _build_evidence_metrics()   — extracts key numeric metrics from agent data
+    _build_agent_contributions() — per-agent summary for explainability
+    _build_cascade_candidates()  — ordered cascade origin list
+    _build_evidence_logs()       — pulls structured templates from LogAgent
+
+    All other orchestration logic (agent execution, save/load, DEFAULT_AGENTS)
+    is unchanged from Phase 3.
 
 Architecture:
-    - AgentRunner is the ONLY orchestration point. Agents do not call each other.
-    - Each agent is run independently and produces one RCASignal per incident.
-    - Signals are merged deterministically (highest confidence wins for hypothesis).
-    - Designed for easy extension: add new agents by registering them below.
-
-Pipeline position:
-    Phase 2:  load_logs → parse → detect → List[Incident]
-    Phase 3:  List[Incident] + parsed_logs → AgentRunner → List[InvestigationReport]
+    - AgentRunner is still the ONLY orchestration point.
+    - Agents do NOT call each other.
+    - signal_fusion is called inside _merge_signals() only.
 """
 
 import json
 import os
 import time
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 from core.incident       import Incident
 from agents.base_agent   import BaseAgent
 from agents.rca_signal   import RCASignal, InvestigationReport
-
-# ── Default agent registry ────────────────────────────────────────────────────
-# Import all built-in agents here. To add a new agent, import it and add to
-# DEFAULT_AGENTS list.
+from core.signal_fusion  import combine_signals
 
 from agents.log_investigation_agent import LogInvestigationAgent
 from agents.infra_agent             import InfraAgent
@@ -44,8 +42,6 @@ DEFAULT_AGENTS: List[BaseAgent] = [
 ]
 
 
-# ── AgentRunner ───────────────────────────────────────────────────────────────
-
 class AgentRunner:
     """
     Orchestrates multi-agent investigation for a list of incidents.
@@ -57,11 +53,6 @@ class AgentRunner:
     """
 
     def __init__(self, agents: Optional[List[BaseAgent]] = None):
-        """
-        Args:
-            agents: List of agent instances to run. Defaults to DEFAULT_AGENTS.
-                    Pass a custom list to override.
-        """
         self.agents = agents if agents is not None else DEFAULT_AGENTS
         print(
             f"[AgentRunner] Initialised with {len(self.agents)} agent(s): "
@@ -75,17 +66,6 @@ class AgentRunner:
         incidents:   List[Incident],
         parsed_logs: List[Dict],
     ) -> List[InvestigationReport]:
-        """
-        Run all agents on every incident and return one InvestigationReport
-        per incident.
-
-        Args:
-            incidents   : List of Incident objects from Phase 2 detection.
-            parsed_logs : Full parsed log list (same as fed to detectors).
-
-        Returns:
-            List of InvestigationReport objects, one per incident.
-        """
         if not incidents:
             print("[AgentRunner] No incidents to investigate.")
             return []
@@ -114,15 +94,6 @@ class AgentRunner:
         filepath:  str,
         overwrite: bool = True,
     ) -> None:
-        """
-        Save InvestigationReport list to JSON.
-
-        Args:
-            reports   : List of InvestigationReport objects.
-            filepath  : Output file path.
-            overwrite : If True (default), replace file. If False, append
-                        with deduplication by report_id.
-        """
         if not reports:
             print("[AgentRunner] No reports to save.")
             return
@@ -154,7 +125,7 @@ class AgentRunner:
             f"(total in file: {len(merged)}) → '{filepath}'"
         )
 
-    # ── Internal methods ──────────────────────────────────────────────────────
+    # ── Internal: orchestration ───────────────────────────────────────────────
 
     def _investigate_incident(
         self,
@@ -169,7 +140,6 @@ class AgentRunner:
                 signal = agent.investigate(incident, parsed_logs)
                 signals.append(signal)
             except Exception as exc:
-                # One agent failing should never block the others
                 print(f"    [WARNING] {agent.name} raised exception: {exc}")
                 signals.append(RCASignal(
                     agent_name=agent.name,
@@ -182,36 +152,38 @@ class AgentRunner:
 
         return self._merge_signals(incident, signals)
 
+    # ── Internal: Phase 3.5 merge pipeline ───────────────────────────────────
+
     def _merge_signals(
         self,
         incident: Incident,
         signals:  List[RCASignal],
     ) -> InvestigationReport:
+        """
+        Merge agent signals into an InvestigationReport using the
+        Phase 3.5 signal fusion pipeline.
+
+        Replaces the naïve "take highest confidence" logic with:
+            normalize → weight → conflict resolve → rank
+        """
         if not signals:
             return InvestigationReport(
                 incident_id=incident.incident_id,
                 incident_summary=str(incident),
             )
 
-        best_signal   = max(signals, key=lambda s: s.confidence)
-        overall_conf  = best_signal.confidence
+        # ── Phase 3.5: signal fusion ──────────────────────────────────────────
+        fused = combine_signals(signals)
 
-        # FIX: consensus hypothesis should come from the most confident
-        # *incident-specific* agent (InfraAgent or LogInvestigationAgent),
-        # not ContextAgent whose score reflects dataset-level coverage.
-        DATASET_AGENTS = {"ContextAgent"}
-        incident_signals = [s for s in signals if s.agent_name not in DATASET_AGENTS]
-        consensus_signal = max(
-            incident_signals,
-            key=lambda s: s.confidence,
-            default=best_signal,   # fallback if only ContextAgent ran
-        )
-        consensus_hyp = consensus_signal.root_cause_hypothesis
-
-        top_components = self._extract_top_components(signals)
-        top_patterns   = self._extract_top_patterns(signals)
-        timeline       = self._extract_timeline(signals)
-        action_items   = self._deduplicate_recommendations(signals)
+        # ── Extract structured fields from agent supporting_data ──────────────
+        top_components    = self._extract_top_components(signals)
+        top_patterns      = self._extract_top_patterns(signals)
+        timeline          = self._extract_timeline(signals)
+        action_items      = self._deduplicate_recommendations(signals, fused.agent_weights)
+        cascade_candidates = self._build_cascade_candidates(signals)
+        evidence_logs     = self._build_evidence_logs(signals)
+        evidence_metrics  = self._build_evidence_metrics(signals)
+        agent_contribs    = self._build_agent_contributions(signals, fused)
 
         return InvestigationReport(
             incident_id=incident.incident_id,
@@ -220,16 +192,27 @@ class AgentRunner:
                 f"errors={incident.error_count} | source={incident.source}"
             ),
             signals=signals,
-            consensus_hypothesis=consensus_hyp,
-            overall_confidence=overall_conf,
+            # Core hypothesis + confidence now come from fusion engine
+            consensus_hypothesis=fused.weighted_hypothesis,
+            overall_confidence=fused.final_confidence,
+            # Structured fields
             top_components=top_components,
             top_error_patterns=top_patterns,
             timeline=timeline,
             action_items=action_items,
+            # Phase 3.5 additions
+            ranked_hypotheses=fused.ranked_hypotheses,
+            cascade_candidates=cascade_candidates,
+            evidence_logs=evidence_logs,
+            evidence_metrics=evidence_metrics,
+            agent_contributions=agent_contribs,
+            conflict_notes=fused.conflict_notes,
+            agreement_pairs=fused.agreement_pairs,
         )
 
+    # ── Field extractors (Phase 3 — unchanged) ────────────────────────────────
+
     def _extract_top_components(self, signals: List[RCASignal]) -> List[str]:
-        """Pull component list from InfraAgent signal."""
         for sig in signals:
             if sig.agent_name == "InfraAgent":
                 comps = sig.supporting_data.get("component_error_counts", [])
@@ -237,7 +220,6 @@ class AgentRunner:
         return []
 
     def _extract_top_patterns(self, signals: List[RCASignal]) -> List[str]:
-        """Pull error templates from LogInvestigationAgent signal."""
         for sig in signals:
             if sig.agent_name == "LogInvestigationAgent":
                 templates = sig.supporting_data.get("top_templates", [])
@@ -245,27 +227,168 @@ class AgentRunner:
         return []
 
     def _extract_timeline(self, signals: List[RCASignal]) -> List[str]:
-        """Pull timeline from LogInvestigationAgent signal."""
         for sig in signals:
             if sig.agent_name == "LogInvestigationAgent":
                 return sig.supporting_data.get("timeline_events", [])
         return []
 
-    def _deduplicate_recommendations(self, signals: List[RCASignal]) -> List[str]:
+    def _deduplicate_recommendations(
+        self,
+        signals: List[RCASignal],
+        agent_weights: Optional[Dict[str, float]] = None,
+    ) -> List[str]:
         """
-        Collect all recommendations from all agents and deduplicate.
-        Preserves order: higher-confidence agents go first.
+        Collect all recommendations, deduplicating and ordering by agent weight.
+        Phase 3.5: uses fused weights if available, otherwise falls back to confidence.
         """
-        sorted_signals = sorted(signals, key=lambda s: -s.confidence)
+        if agent_weights:
+            sorted_signals = sorted(
+                signals,
+                key=lambda s: -(agent_weights.get(s.agent_name, 0.0)),
+            )
+        else:
+            sorted_signals = sorted(signals, key=lambda s: -s.confidence)
+
         seen: set = set()
         result = []
         for sig in sorted_signals:
             for rec in sig.recommendations:
-                normalised = rec.strip().lower()
-                if normalised not in seen:
-                    seen.add(normalised)
+                norm = rec.strip().lower()
+                if norm not in seen:
+                    seen.add(norm)
                     result.append(rec)
         return result
+
+    # ── Phase 3.5 new extractors ──────────────────────────────────────────────
+
+    def _build_cascade_candidates(self, signals: List[RCASignal]) -> List[str]:
+        """
+        Build an ordered list of cascade-origin component candidates.
+
+        Sources (in priority order):
+            1. InfraAgent cascade_sequence (already ordered by first-error appearance)
+            2. ContextAgent component_cofailure pairs (most co-occurring pair first)
+            3. InfraAgent component_error_counts order (fallback)
+        """
+        # Source 1: InfraAgent cascade sequence
+        for sig in signals:
+            if sig.agent_name == "InfraAgent":
+                seq = sig.supporting_data.get("cascade_sequence", [])
+                if len(seq) >= 2:
+                    return seq
+
+        # Source 2: ContextAgent co-failure pairs
+        for sig in signals:
+            if sig.agent_name == "ContextAgent":
+                pairs = sig.supporting_data.get("component_cofailure", {}).get(
+                    "top_cofailure_pairs", []
+                )
+                if pairs:
+                    # Parse "COMP_A + COMP_B" string
+                    first_pair = pairs[0].get("pair", "")
+                    comps = [c.strip() for c in first_pair.split("+")]
+                    if len(comps) == 2:
+                        return comps
+
+        # Source 3: top components by error count order (weakest signal)
+        for sig in signals:
+            if sig.agent_name == "InfraAgent":
+                comps = sig.supporting_data.get("component_error_counts", [])
+                return [c["component"] for c in comps[:4]]
+
+        return []
+
+    def _build_evidence_logs(self, signals: List[RCASignal]) -> List[Dict]:
+        """
+        Pull structured log templates from LogInvestigationAgent as evidence.
+        Returns the top_templates list enriched with agent attribution.
+        """
+        for sig in signals:
+            if sig.agent_name == "LogInvestigationAgent":
+                templates = sig.supporting_data.get("top_templates", [])
+                return [
+                    {
+                        "template": t.get("template", ""),
+                        "count":    t.get("count", 0),
+                        "source":   "LogInvestigationAgent",
+                    }
+                    for t in templates[:10]
+                ]
+        return []
+
+    def _build_evidence_metrics(self, signals: List[RCASignal]) -> Dict:
+        """
+        Extract key numeric metrics from agent supporting_data into a flat dict
+        for easy consumption by downstream systems (correlation, dashboards).
+
+        Pulls from InfraAgent and ContextAgent.
+        """
+        metrics: Dict = {}
+
+        for sig in signals:
+            if sig.agent_name == "InfraAgent":
+                sd = sig.supporting_data
+                burst = sd.get("burst_stats", {})
+                metrics["peak_density_pct"]      = burst.get("peak_density_pct", 0)
+                metrics["burst_shape"]           = burst.get("shape", "unknown")
+                metrics["sustained_buckets"]     = burst.get("sustained_buckets", 0)
+                metrics["error_velocity_per_100"] = sd.get("error_velocity_per_100", 0)
+                metrics["total_error_entries"]   = sd.get("total_error_entries", 0)
+                metrics["cascade_detected"]      = sd.get("cascade_detected", False)
+
+            if sig.agent_name == "LogInvestigationAgent":
+                sd = sig.supporting_data
+                metrics["unique_error_templates"] = sd.get("unique_templates", 0)
+                metrics["error_count_in_scope"]  = sd.get("error_count_in_scope", 0)
+                metrics["error_progression"]     = sd.get("error_progression", "unknown")
+
+            if sig.agent_name == "ContextAgent":
+                sd = sig.supporting_data
+                label_info = sd.get("label_correlation", {})
+                if label_info:
+                    metrics["gt_label_rate_pct"]  = label_info.get("label_rate_pct", 0)
+                    metrics["gt_coverage_pct"]    = label_info.get("gt_coverage", 0)
+                rack_info = sd.get("rack_topology", {})
+                if rack_info:
+                    metrics["racks_affected"]     = rack_info.get("total_racks_affected", 0)
+                    metrics["failure_spread"]     = rack_info.get("spread", "unknown")
+                # Top failure category
+                failure_cats = sd.get("failure_categories", [])
+                if failure_cats:
+                    metrics["primary_failure_category"] = failure_cats[0].get("category", "")
+
+        return metrics
+
+    def _build_agent_contributions(
+        self,
+        signals: List[RCASignal],
+        fused,          # FusedSignal
+    ) -> Dict:
+        """
+        Build a per-agent contribution summary for report explainability.
+
+        Structure:
+            {
+                "LogInvestigationAgent": {
+                    "weight": 0.41,
+                    "confidence": 0.97,
+                    "key_finding": "Most frequent error pattern (56x): ...",
+                    "recommendation_count": 3,
+                },
+                ...
+            }
+        """
+        contribs: Dict = {}
+        for sig in signals:
+            key_finding = sig.findings[0] if sig.findings else sig.root_cause_hypothesis[:80]
+            contribs[sig.agent_name] = {
+                "weight":               fused.agent_weights.get(sig.agent_name, 0.0),
+                "confidence":           sig.confidence,
+                "key_finding":          key_finding,
+                "recommendation_count": len(sig.recommendations),
+                "findings_count":       len(sig.findings),
+            }
+        return contribs
 
 
 # ── Convenience function ──────────────────────────────────────────────────────
@@ -279,16 +402,6 @@ def run_investigation(
 ) -> List[InvestigationReport]:
     """
     One-call convenience: run full multi-agent investigation and save results.
-
-    Args:
-        incidents   : From Phase 2 detection.
-        parsed_logs : Full parsed log corpus.
-        output_file : Where to write reports JSON.
-        overwrite   : Overwrite or append to existing file.
-        agents      : Custom agent list (None = use DEFAULT_AGENTS).
-
-    Returns:
-        List of InvestigationReport objects.
     """
     runner  = AgentRunner(agents=agents)
     reports = runner.run(incidents, parsed_logs)

@@ -6,25 +6,22 @@
   Log lines processed :      2,000
   Incidents detected  :         17
   Reports generated   :         17
-  Total runtime       :      0.12s
+  Total runtime       :      0.45s
 
 ── Report 1/17: Incident 3b4a131c ──────────────────
   Summary   : ERROR_SPIKE | CRITICAL | errors=395 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 83%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: FLOOD (peak density 100.0%) | Hotspot component: KERNEL (240 errors) | Most affected node: R30-M0-N9-C:J16-U01 (60 errors) | Cascade detected: APP → KERNEL → DISCOVERY → HARDWARE | Error velocity: 19.75 errors/100 log entries
 
   Top Components : KERNEL, APP, MMCS, DISCOVERY, HARDWARE
   Top Error Patterns:
-    • data TLB error interrupt
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • data storage interrupt
+    • ciod: Error loading <PATH>: invalid or missing program image, No such file 
+    • ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket t
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
   Timeline (first occurrences):
-    → 2005-06-04T00:24:32.432192 — FIRST OCCURRENCE: ciod: failed to read message
-    → 2005-06-05T08:10:46.344235 — FIRST OCCURRENCE: force load<VAR> alignment...
-    → 2005-06-07T18:15:58.583443 — FIRST OCCURRENCE: ciod: LOGIN chdir(<VAR>) fai
-    → 2005-06-11T17:32:07.581048 — FIRST OCCURRENCE: data TLB error interrupt
+    → 2005-11-21T04:23:18.419757 — FIRST OCCURRENCE: Lustre mount FAILED : bglio7
 
   Action Items:
     1. CRITICAL: Flood-level error burst — consider immediate service isolation.
@@ -32,10 +29,10 @@
     3. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
     4. Cascade origin likely in first component: 'APP'. Isolate it to stop propagation.
     5. Review infrastructure change log for events preceding the burst start index.
-    6. Review kernel exception logs — TLB/cache errors may indicate compute node fault.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=58% | Dominant failure pattern (60x): 'data TLB error interrupt' |
+    [LogInvestigationAgent     ] confidence=53% | Dominant failure pattern (27x): 'ciod: Error loading <PATH>:
     [InfraAgent                ] confidence=97% | Burst shape: FLOOD (peak density 100.0%) | Hotspot component
     [ContextAgent              ] confidence=97% | Primary failure category: COMPUTE (128 errors) | Most affect
 
@@ -43,30 +40,27 @@
 
 ── Report 2/17: Incident 2d7e2484 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=20 | source=data/BGL.log
-  Confidence: 71%
+  Confidence: 59%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SPIKE (peak density 50.0%) | Hotspot component: KERNEL (4 errors) | Most affected node: R30-M0-N9-C:J16-U01 (3 errors) | Error velocity: 6.6 errors/100 log entries
 
   Top Components : KERNEL, APP
   Top Error Patterns:
-    • data TLB error interrupt
     • ciod: failed to read message prefix on control stream (CioStream socket to 
-    • force load<VAR> alignment...............<VAR>
-  Timeline (first occurrences):
-    → 2005-06-04T00:24:32.432192 — FIRST OCCURRENCE: ciod: failed to read message
-    → 2005-06-11T17:32:07.581048 — FIRST OCCURRENCE: data TLB error interrupt
+    • force load<PATH> alignment...............<NUM>
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Investigate causal link between co-failing components: APP + KERNEL
-    3. Short error spike detected — investigate triggering event at peak timestamp.
-    4. Prioritise investigation of component 'KERNEL' — highest error count (4).
-    5. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
-    6. Review infrastructure change log for events preceding the burst start index.
+    1. Short error spike detected — investigate triggering event at peak timestamp.
+    2. Prioritise investigation of component 'KERNEL' — highest error count (4).
+    3. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
+    4. Review infrastructure change log for events preceding the burst start index.
+    5. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
+    6. Investigate causal link between co-failing components: APP + KERNEL
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=28% | Dominant failure pattern (3x): 'data TLB error interrupt' | 
+    [LogInvestigationAgent     ] confidence=21% | Dominant failure pattern (2x): 'ciod: failed to read message
     [InfraAgent                ] confidence=60% | Burst shape: SPIKE (peak density 50.0%) | Hotspot component:
     [ContextAgent              ] confidence=71% | Primary failure category: IO (3 errors) | Most affected rack
 
@@ -74,29 +68,27 @@
 
 ── Report 3/17: Incident 6acb907e ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=67 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 76%
 
   CONSENSUS HYPOTHESIS:
-    Dominant failure pattern (56x): 'data TLB error interrupt' | Key error terms: data, tlb, interrupt, ciod | Primary affected component: KERNEL
+    Burst shape: SPIKE (peak density 100.0%) | Hotspot component: KERNEL (57 errors) | Most affected node: R30-M0-N9-C:J16-U01 (56 errors) | Error velocity: 39.33 errors/100 log entries
 
   Top Components : KERNEL, APP
   Top Error Patterns:
-    • data TLB error interrupt
     • ciod: failed to read message prefix on control stream (CioStream socket to 
-    • force load<VAR> alignment...............<VAR>
-  Timeline (first occurrences):
-    → 2005-06-11T17:32:07.581048 — FIRST OCCURRENCE: data TLB error interrupt
+    • force load<PATH> alignment...............<NUM>
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
 
   Action Items:
-    1. Review kernel logs on affected nodes for hardware exceptions.
-    2. Focus investigation on component: KERNEL
-    3. Correlate error timestamps with deployment, config, or maintenance events.
-    4. Review kernel exception logs — TLB/cache errors may indicate compute node fault.
-    5. Investigate causal link between co-failing components: APP + KERNEL
-    6. Short error spike detected — investigate triggering event at peak timestamp.
+    1. Short error spike detected — investigate triggering event at peak timestamp.
+    2. Prioritise investigation of component 'KERNEL' — highest error count (57).
+    3. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
+    4. Review infrastructure change log for events preceding the burst start index.
+    5. Investigate I/O node connectivity — CIOD errors indicate communication failure.
+    6. Focus investigation on component: KERNEL
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=97% | Dominant failure pattern (56x): 'data TLB error interrupt' |
+    [LogInvestigationAgent     ] confidence=51% | Dominant failure pattern (1x): 'ciod: failed to read message
     [InfraAgent                ] confidence=81% | Burst shape: SPIKE (peak density 100.0%) | Hotspot component
     [ContextAgent              ] confidence=97% | Primary failure category: COMPUTE (56 errors) | Most affecte
 
@@ -104,31 +96,27 @@
 
 ── Report 4/17: Incident c3ebe36b ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=93 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 78%
 
   CONSENSUS HYPOTHESIS:
-    Dominant failure pattern (60x): 'data TLB error interrupt' | Key error terms: data, interrupt, tlb, storage | Primary affected component: KERNEL
+    Burst shape: SUSTAINED (peak density 96.0%) | Hotspot component: KERNEL (74 errors) | Most affected node: R30-M0-N9-C:J16-U01 (60 errors) | Error velocity: 50.0 errors/100 log entries
 
   Top Components : KERNEL, APP
   Top Error Patterns:
+    • force load<PATH> alignment...............<NUM>
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
     • data TLB error interrupt
-    • data storage interrupt
-    • instruction address: <VAR>
-  Timeline (first occurrences):
-    → 2005-06-11T17:32:07.581048 — FIRST OCCURRENCE: data TLB error interrupt
-    → 2005-06-13T17:36:43.927885 — FIRST OCCURRENCE: data storage interrupt
-    → 2005-06-13T17:45:55.674418 — FIRST OCCURRENCE: instruction address: <VAR>
 
   Action Items:
-    1. Review kernel exception logs — TLB/cache errors may indicate compute node fault.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Review kernel logs on affected nodes for hardware exceptions.
-    5. Focus investigation on component: KERNEL
-    6. Correlate error timestamps with deployment, config, or maintenance events.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'KERNEL' — highest error count (74).
+    3. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
+    4. Review infrastructure change log for events preceding the burst start index.
+    5. Investigate the dominant error pattern: 'force load<PATH> alignment...............<NUM>'
+    6. Focus investigation on component: KERNEL
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=90% | Dominant failure pattern (60x): 'data TLB error interrupt' |
+    [LogInvestigationAgent     ] confidence=51% | Dominant failure pattern (1x): 'force load<PATH> alignment..
     [InfraAgent                ] confidence=87% | Burst shape: SUSTAINED (peak density 96.0%) | Hotspot compon
     [ContextAgent              ] confidence=97% | Primary failure category: COMPUTE (68 errors) | Most affecte
 
@@ -136,7 +124,7 @@
 
 ── Report 5/17: Incident 2b0150d4 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=95 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 83%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 100.0%) | Hotspot component: KERNEL (130 errors) | Most affected node: R30-M0-N9-C:J16-U01 (60 errors) | Error velocity: 86.67 errors/100 log entries
@@ -145,23 +133,18 @@
   Top Error Patterns:
     • data TLB error interrupt
     • data storage interrupt
-    • instruction address: <VAR>
-  Timeline (first occurrences):
-    → 2005-06-11T17:32:07.581048 — FIRST OCCURRENCE: data TLB error interrupt
-    → 2005-06-13T17:36:43.927885 — FIRST OCCURRENCE: data storage interrupt
-    → 2005-06-13T17:45:55.674418 — FIRST OCCURRENCE: instruction address: <VAR>
-    → 2005-06-14T09:36:55.370589 — FIRST OCCURRENCE: data address: <VAR>
+    • instruction address: <HEX>
 
   Action Items:
     1. Sustained error burst — investigate root cause before errors escalate further.
     2. Prioritise investigation of component 'KERNEL' — highest error count (130).
     3. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
     4. Review infrastructure change log for events preceding the burst start index.
-    5. Review kernel exception logs — TLB/cache errors may indicate compute node fault.
-    6. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
+    5. Review kernel logs on affected nodes for hardware exceptions.
+    6. Focus investigation on component: KERNEL
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=73% | Dominant failure pattern (60x): 'data TLB error interrupt' |
+    [LogInvestigationAgent     ] confidence=50% | Dominant failure pattern (1x): 'data TLB error interrupt' | 
     [InfraAgent                ] confidence=97% | Burst shape: SUSTAINED (peak density 100.0%) | Hotspot compo
     [ContextAgent              ] confidence=97% | Primary failure category: COMPUTE (93 errors) | Most affecte
 
@@ -169,32 +152,27 @@
 
 ── Report 6/17: Incident e17daa57 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=92 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 83%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 100.0%) | Hotspot component: KERNEL (143 errors) | Most affected node: R30-M0-N9-C:J16-U01 (34 errors) | Error velocity: 95.33 errors/100 log entries
 
   Top Components : KERNEL
   Top Error Patterns:
+    • data store interrupt caused by dcbf.........<NUM>
+    • floating pt ex mode <NUM> enable......<NUM>
     • data TLB error interrupt
-    • data storage interrupt
-    • instruction address: <VAR>
-  Timeline (first occurrences):
-    → 2005-06-11T19:41:12.806499 — FIRST OCCURRENCE: data TLB error interrupt
-    → 2005-06-13T17:36:43.927885 — FIRST OCCURRENCE: data storage interrupt
-    → 2005-06-13T17:45:55.674418 — FIRST OCCURRENCE: instruction address: <VAR>
-    → 2005-06-14T09:36:55.370589 — FIRST OCCURRENCE: data address: <VAR>
 
   Action Items:
     1. Sustained error burst — investigate root cause before errors escalate further.
     2. Prioritise investigation of component 'KERNEL' — highest error count (143).
     3. Inspect node 'R30-M0-N9-C:J16-U01' directly — responsible for most errors in this incident.
     4. Review infrastructure change log for events preceding the burst start index.
-    5. Review kernel exception logs — TLB/cache errors may indicate compute node fault.
-    6. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
+    5. Investigate the dominant error pattern: 'data store interrupt caused by dcbf.........<NUM>'
+    6. Focus investigation on component: KERNEL
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=62% | Dominant failure pattern (34x): 'data TLB error interrupt' |
+    [LogInvestigationAgent     ] confidence=51% | Dominant failure pattern (2x): 'data store interrupt caused 
     [InfraAgent                ] confidence=97% | Burst shape: SUSTAINED (peak density 100.0%) | Hotspot compo
     [ContextAgent              ] confidence=97% | Primary failure category: COMPUTE (88 errors) | Most affecte
 
@@ -202,32 +180,27 @@
 
 ── Report 7/17: Incident b7aa42c0 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=45 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 83%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 100.0%) | Hotspot component: KERNEL (117 errors) | Most affected node: R25-M1-N3-C:J16-U01 (2 errors) | Error velocity: 78.67 errors/100 log entries
 
   Top Components : KERNEL, APP
   Top Error Patterns:
-    • data storage interrupt
-    • instruction address: <VAR>
-    • data address: <VAR>
-  Timeline (first occurrences):
-    → 2005-06-14T09:17:05.516605 — FIRST OCCURRENCE: instruction address: <VAR>
-    → 2005-06-14T09:33:24.217741 — FIRST OCCURRENCE: data storage interrupt
-    → 2005-06-14T09:36:55.370589 — FIRST OCCURRENCE: data address: <VAR>
-    → 2005-06-14T09:41:23.815131 — FIRST OCCURRENCE: machine check: i-fetch......
+    • data store interrupt caused by dcbf.........<NUM>
+    • floating pt ex mode <NUM> enable......<NUM>
+    • instruction address: <HEX>
 
   Action Items:
     1. Sustained error burst — investigate root cause before errors escalate further.
     2. Prioritise investigation of component 'KERNEL' — highest error count (117).
     3. Inspect node 'R25-M1-N3-C:J16-U01' directly — responsible for most errors in this incident.
     4. Review infrastructure change log for events preceding the burst start index.
-    5. Review kernel exception logs — TLB/cache errors may indicate compute node fault.
-    6. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
+    5. Investigate the dominant error pattern: 'data store interrupt caused by dcbf.........<NUM>'
+    6. Focus investigation on component: KERNEL
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=56% | Dominant failure pattern (14x): 'data storage interrupt' | K
+    [LogInvestigationAgent     ] confidence=51% | Dominant failure pattern (2x): 'data store interrupt caused 
     [InfraAgent                ] confidence=97% | Burst shape: SUSTAINED (peak density 100.0%) | Hotspot compo
     [ContextAgent              ] confidence=97% | Primary failure category: COMPUTE (44 errors) | Most affecte
 
@@ -235,32 +208,27 @@
 
 ── Report 8/17: Incident 7f0e42d2 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=20 | source=data/BGL.log
-  Confidence: 93%
+  Confidence: 70%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 54.0%) | Hotspot component: APP (21 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 28.67 errors/100 log entries
 
   Top Components : APP, DISCOVERY, MMCS, KERNEL, HARDWARE
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Exec format er
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • Can not get assembly information for node card
-  Timeline (first occurrences):
-    → 2005-08-02T21:15:36.811548 — FIRST OCCURRENCE: Can not get assembly informa
-    → 2005-08-03T16:11:02.839771 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
-    → 2005-08-04T10:27:46.284345 — FIRST OCCURRENCE: Node card status: no ALERTs 
-    → 2005-08-12T23:25:12.135766 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
+    • Node card status: ALERT <NUM>, ALERT <NUM>, ALERT <NUM>, ALERT <NUM> is (ar
+    • rts: kernel terminated for reason <NUM>
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (21).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (21).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'HARDWARE'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=60% | Dominant failure pattern (15x): 'ciod: Error loading <VAR>: 
+    [LogInvestigationAgent     ] confidence=46% | Dominant failure pattern (3x): 'ciod: LOGIN chdir(<PATH>) fa
     [InfraAgent                ] confidence=74% | Burst shape: SUSTAINED (peak density 54.0%) | Hotspot compon
     [ContextAgent              ] confidence=93% | Primary failure category: IO (20 errors) | Most affected rac
 
@@ -268,32 +236,27 @@
 
 ── Report 9/17: Incident 9659cd66 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=44 | source=data/BGL.log
-  Confidence: 93%
+  Confidence: 70%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 54.0%) | Hotspot component: APP (21 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 28.67 errors/100 log entries
 
   Top Components : APP, DISCOVERY, MMCS, KERNEL, HARDWARE
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Exec format er
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • Can not get assembly information for node card
-  Timeline (first occurrences):
-    → 2005-08-02T21:15:36.811548 — FIRST OCCURRENCE: Can not get assembly informa
-    → 2005-08-03T16:11:02.839771 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
-    → 2005-08-04T10:27:46.284345 — FIRST OCCURRENCE: Node card status: no ALERTs 
-    → 2005-08-12T23:25:12.135766 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
+    • Node card status: ALERT <NUM>, ALERT <NUM>, ALERT <NUM>, ALERT <NUM> is (ar
+    • rts: kernel terminated for reason <NUM>
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (21).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (21).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'HARDWARE'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=60% | Dominant failure pattern (15x): 'ciod: Error loading <VAR>: 
+    [LogInvestigationAgent     ] confidence=46% | Dominant failure pattern (3x): 'ciod: LOGIN chdir(<PATH>) fa
     [InfraAgent                ] confidence=74% | Burst shape: SUSTAINED (peak density 54.0%) | Hotspot compon
     [ContextAgent              ] confidence=93% | Primary failure category: IO (20 errors) | Most affected rac
 
@@ -301,32 +264,27 @@
 
 ── Report 10/17: Incident cba277ab ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=25 | source=data/BGL.log
-  Confidence: 93%
+  Confidence: 71%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SPIKE (peak density 64.0%) | Hotspot component: APP (22 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 29.33 errors/100 log entries
 
   Top Components : APP, DISCOVERY, MMCS, KERNEL, HARDWARE
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Exec format er
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • Can not get assembly information for node card
-  Timeline (first occurrences):
-    → 2005-08-02T21:15:36.811548 — FIRST OCCURRENCE: Can not get assembly informa
-    → 2005-08-03T16:11:02.839771 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
-    → 2005-08-04T10:27:46.284345 — FIRST OCCURRENCE: Node card status: no ALERTs 
-    → 2005-08-12T23:25:12.135766 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
+    • Node card status: ALERT <NUM>, ALERT <NUM>, ALERT <NUM>, ALERT <NUM> is (ar
+    • rts: kernel terminated for reason <NUM>
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Short error spike detected — investigate triggering event at peak timestamp.
-    5. Prioritise investigation of component 'APP' — highest error count (22).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Short error spike detected — investigate triggering event at peak timestamp.
+    2. Prioritise investigation of component 'APP' — highest error count (22).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'HARDWARE'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=61% | Dominant failure pattern (15x): 'ciod: Error loading <VAR>: 
+    [LogInvestigationAgent     ] confidence=49% | Dominant failure pattern (4x): 'ciod: LOGIN chdir(<PATH>) fa
     [InfraAgent                ] confidence=75% | Burst shape: SPIKE (peak density 64.0%) | Hotspot component:
     [ContextAgent              ] confidence=93% | Primary failure category: IO (21 errors) | Most affected rac
 
@@ -334,32 +292,27 @@
 
 ── Report 11/17: Incident ee21a971 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=20 | source=data/BGL.log
-  Confidence: 93%
+  Confidence: 71%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 46.0%) | Hotspot component: APP (22 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 29.33 errors/100 log entries
 
   Top Components : APP, DISCOVERY, MMCS, KERNEL, HARDWARE
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Exec format er
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • Can not get assembly information for node card
-  Timeline (first occurrences):
-    → 2005-08-02T21:15:36.811548 — FIRST OCCURRENCE: Can not get assembly informa
-    → 2005-08-03T16:11:02.839771 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
-    → 2005-08-04T10:27:46.284345 — FIRST OCCURRENCE: Node card status: no ALERTs 
-    → 2005-08-12T23:25:12.135766 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
+    • Node card status: ALERT <NUM>, ALERT <NUM>, ALERT <NUM>, ALERT <NUM> is (ar
+    • rts: kernel terminated for reason <NUM>
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (22).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (22).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'HARDWARE'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=61% | Dominant failure pattern (15x): 'ciod: Error loading <VAR>: 
+    [LogInvestigationAgent     ] confidence=49% | Dominant failure pattern (4x): 'ciod: LOGIN chdir(<PATH>) fa
     [InfraAgent                ] confidence=75% | Burst shape: SUSTAINED (peak density 46.0%) | Hotspot compon
     [ContextAgent              ] confidence=93% | Primary failure category: IO (21 errors) | Most affected rac
 
@@ -367,32 +320,27 @@
 
 ── Report 12/17: Incident 65f5d2ce ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=59 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 76%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 84.0%) | Hotspot component: MMCS (26 errors) | Most affected node: NULL (26 errors) | Cascade detected: DISCOVERY → KERNEL → APP → MMCS | Error velocity: 37.33 errors/100 log entries
 
   Top Components : MMCS, APP, KERNEL, DISCOVERY
   Top Error Patterns:
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • ciod: Error loading <VAR>: invalid or missing program image, No such file o
-    • ciod: LOGIN chdir(<VAR>) failed: No such file or directory
-  Timeline (first occurrences):
-    → 2005-08-27T18:49:52.912954 — FIRST OCCURRENCE: Node card status: no ALERTs 
-    → 2005-09-02T06:35:17.592760 — FIRST OCCURRENCE: ciod: LOGIN chdir(<VAR>) fai
-    → 2005-09-10T23:46:15.250215 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
-    → 2005-09-11T03:22:40.852080 — FIRST OCCURRENCE: ciod: Error reading message 
+    • Lustre mount FAILED : bglio559 : point <PATH>
+    • ciod: Error loading <PATH>: invalid or missing program image, No such file 
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
 
   Action Items:
-    1. Inspect torus network links — high torus error count suggests fabric instability.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: MMCS + APP
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'MMCS' — highest error count (26).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'MMCS' — highest error count (26).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'DISCOVERY'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate the dominant error pattern: 'Lustre mount FAILED : bglio559 : point <PATH>'
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=73% | Dominant failure pattern (26x): 'idoproxydb hit ASSERT condi
+    [LogInvestigationAgent     ] confidence=58% | Dominant failure pattern (9x): 'Lustre mount FAILED : bglio5
     [InfraAgent                ] confidence=79% | Burst shape: SUSTAINED (peak density 84.0%) | Hotspot compon
     [ContextAgent              ] confidence=97% | Primary failure category: NETWORK (34 errors) | Most affecte
 
@@ -400,32 +348,27 @@
 
 ── Report 13/17: Incident 3976ce5b ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=52 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 78%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 70.0%) | Hotspot component: APP (27 errors) | Most affected node: NULL (26 errors) | Cascade detected: KERNEL → APP → DISCOVERY → MMCS | Error velocity: 42.67 errors/100 log entries
 
   Top Components : APP, MMCS, KERNEL, DISCOVERY
   Top Error Patterns:
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • ciod: LOGIN chdir(<VAR>) failed: No such file or directory
-    • ciod: Error loading <VAR>: invalid or missing program image, No such file o
-  Timeline (first occurrences):
-    → 2005-09-02T06:35:17.592760 — FIRST OCCURRENCE: ciod: LOGIN chdir(<VAR>) fai
-    → 2005-09-10T23:46:15.250215 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
-    → 2005-09-11T03:22:40.852080 — FIRST OCCURRENCE: ciod: Error reading message 
-    → 2005-09-20T12:06:03.683009 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
+    • Lustre mount FAILED : bglio559 : point <PATH>
+    • ciod: Error loading <PATH>: invalid or missing program image, No such file 
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
 
   Action Items:
-    1. Inspect torus network links — high torus error count suggests fabric instability.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: MMCS + APP
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (27).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (27).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'KERNEL'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate the dominant error pattern: 'Lustre mount FAILED : bglio559 : point <PATH>'
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=70% | Dominant failure pattern (26x): 'idoproxydb hit ASSERT condi
+    [LogInvestigationAgent     ] confidence=57% | Dominant failure pattern (9x): 'Lustre mount FAILED : bglio5
     [InfraAgent                ] confidence=83% | Burst shape: SUSTAINED (peak density 70.0%) | Hotspot compon
     [ContextAgent              ] confidence=97% | Primary failure category: NETWORK (37 errors) | Most affecte
 
@@ -433,32 +376,27 @@
 
 ── Report 14/17: Incident f5491880 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=21 | source=data/BGL.log
-  Confidence: 97%
+  Confidence: 80%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 72.0%) | Hotspot component: APP (39 errors) | Most affected node: NULL (26 errors) | Cascade detected: KERNEL → APP → DISCOVERY → MMCS | Error velocity: 48.0 errors/100 log entries
 
   Top Components : APP, MMCS, KERNEL, DISCOVERY
   Top Error Patterns:
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • ciod: Error loading <VAR>: invalid or missing program image, No such file o
-    • ciod: Error loading <VAR>: invalid or missing program image, Permission den
-  Timeline (first occurrences):
-    → 2005-09-10T23:46:15.250215 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
-    → 2005-09-11T03:22:40.852080 — FIRST OCCURRENCE: ciod: Error reading message 
-    → 2005-09-19T09:32:14.136187 — FIRST OCCURRENCE: ciod: LOGIN chdir(<VAR>) fai
-    → 2005-09-20T12:06:03.683009 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
+    • ciod: Error loading <PATH>: invalid or missing program image, No such file 
+    • ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket t
+    • ciod: LOGIN chdir(<*> .<NUM>.<NUM>-<NUM>.<NUM>.<NUM>) failed: No such file 
 
   Action Items:
-    1. Inspect torus network links — high torus error count suggests fabric instability.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (39).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (39).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'KERNEL'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=68% | Dominant failure pattern (26x): 'idoproxydb hit ASSERT condi
+    [LogInvestigationAgent     ] confidence=60% | Dominant failure pattern (15x): 'ciod: Error loading <PATH>:
     [InfraAgent                ] confidence=86% | Burst shape: SUSTAINED (peak density 72.0%) | Hotspot compon
     [ContextAgent              ] confidence=97% | Primary failure category: NETWORK (40 errors) | Most affecte
 
@@ -466,30 +404,27 @@
 
 ── Report 15/17: Incident d32a1455 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=20 | source=data/BGL.log
-  Confidence: 74%
+  Confidence: 61%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SPIKE (peak density 20.0%) | Hotspot component: KERNEL (9 errors) | Error velocity: 8.0 errors/100 log entries
 
   Top Components : KERNEL, APP
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Permission den
-    • rts: kernel terminated for reason <VAR>
-    • Error receiving packet on tree network, expecting type <VAR> instead of typ
-  Timeline (first occurrences):
-    → 2005-11-07T04:32:10.481855 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
-    → 2005-11-10T19:38:42.369022 — FIRST OCCURRENCE: rts: kernel terminated for r
+    • Error receiving packet on tree network, expecting type <NUM> instead of typ
+    • ciod: Error loading <PATH>: invalid or missing program image, Permission de
+    • program interrupt: privileged instruction...<NUM>
 
   Action Items:
-    1. Inspect torus network links — high torus error count suggests fabric instability.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: KERNEL + APP
-    4. Short error spike detected — investigate triggering event at peak timestamp.
-    5. Prioritise investigation of component 'KERNEL' — highest error count (9).
-    6. Inspect node 'R50-M0-N4-I:J18-U01' directly — responsible for most errors in this incident.
+    1. Short error spike detected — investigate triggering event at peak timestamp.
+    2. Prioritise investigation of component 'KERNEL' — highest error count (9).
+    3. Inspect node 'R50-M0-N4-I:J18-U01' directly — responsible for most errors in this incident.
+    4. Review infrastructure change log for events preceding the burst start index.
+    5. Inspect torus network links — high torus error count suggests fabric instability.
+    6. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=24% | Dominant failure pattern (3x): 'ciod: Error loading <VAR>: i
+    [LogInvestigationAgent     ] confidence=29% | Dominant failure pattern (4x): 'Error receiving packet on tr
     [InfraAgent                ] confidence=62% | Burst shape: SPIKE (peak density 20.0%) | Hotspot component:
     [ContextAgent              ] confidence=74% | Primary failure category: NETWORK (4 errors) | Most affected
 
@@ -497,32 +432,27 @@
 
 ── Report 16/17: Incident 54e1fbcb ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=22 | source=data/BGL.log
-  Confidence: 94%
+  Confidence: 72%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 48.0%) | Hotspot component: APP (22 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 30.0 errors/100 log entries
 
   Top Components : APP, DISCOVERY, MMCS, KERNEL, HARDWARE
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Exec format er
-    • idoproxydb hit ASSERT condition: ASSERT expression=<VAR> Source file=idotra
-    • Can not get assembly information for node card
-  Timeline (first occurrences):
-    → 2005-08-02T21:15:36.811548 — FIRST OCCURRENCE: Can not get assembly informa
-    → 2005-08-03T16:11:02.839771 — FIRST OCCURRENCE: idoproxydb hit ASSERT condit
-    → 2005-08-04T10:27:46.284345 — FIRST OCCURRENCE: Node card status: no ALERTs 
-    → 2005-08-12T23:25:12.135766 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
+    • ciod: LOGIN chdir(<PATH>) failed: No such file or directory
+    • Node card status: ALERT <NUM>, ALERT <NUM>, ALERT <NUM>, ALERT <NUM> is (ar
+    • rts: kernel terminated for reason <NUM>
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (22).
-    6. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (22).
+    3. Inspect node 'NULL' directly — responsible for most errors in this incident.
+    4. Cascade origin likely in first component: 'HARDWARE'. Isolate it to stop propagation.
+    5. Review infrastructure change log for events preceding the burst start index.
+    6. Investigate I/O node connectivity — CIOD errors indicate communication failure.
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=62% | Dominant failure pattern (15x): 'ciod: Error loading <VAR>: 
+    [LogInvestigationAgent     ] confidence=49% | Dominant failure pattern (4x): 'ciod: LOGIN chdir(<PATH>) fa
     [InfraAgent                ] confidence=75% | Burst shape: SUSTAINED (peak density 48.0%) | Hotspot compon
     [ContextAgent              ] confidence=94% | Primary failure category: IO (21 errors) | Most affected rac
 
@@ -530,31 +460,27 @@
 
 ── Report 17/17: Incident 1998cdb5 ──────────────────
   Summary   : SLIDING_WINDOW_SPIKE | CRITICAL | errors=20 | source=data/BGL.log
-  Confidence: 81%
+  Confidence: 62%
 
   CONSENSUS HYPOTHESIS:
     Burst shape: SUSTAINED (peak density 33.3%) | Hotspot component: APP (17 errors) | Error velocity: 17.69 errors/100 log entries
 
   Top Components : APP, KERNEL
   Top Error Patterns:
-    • ciod: Error loading <VAR>: invalid or missing program image, Permission den
-    • ciod: Error loading <VAR>: invalid or missing program image, No such file o
-    • ciod: Error reading message prefix on CioStream socket to <VAR>:<VAR>, Link
-  Timeline (first occurrences):
-    → 2005-12-08T22:17:36.597185 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
-    → 2005-12-09T12:14:16.349690 — FIRST OCCURRENCE: ciod: Error loading <VAR>: i
-    → 2005-12-13T09:52:35.527182 — FIRST OCCURRENCE: ciod: Error reading message 
+    • ciod: Error loading <*> : invalid or missing program image, Permission deni
+    • ciod: Error reading message prefix on CioStream socket to <IP>:<NUM>, Link 
+    • ciod: Error loading <*> .<PATH>: invalid or missing program image, No such 
 
   Action Items:
-    1. Check I/O node health — CIOD failures indicate I/O subsystem disruption.
-    2. Failure is WIDE-SPREAD — may indicate a systemic issue (firmware, cooling, power).
-    3. Investigate causal link between co-failing components: APP + KERNEL
-    4. Sustained error burst — investigate root cause before errors escalate further.
-    5. Prioritise investigation of component 'APP' — highest error count (17).
-    6. Inspect node 'R71-M0-N4-C:J14-U01' directly — responsible for most errors in this incident.
+    1. Sustained error burst — investigate root cause before errors escalate further.
+    2. Prioritise investigation of component 'APP' — highest error count (17).
+    3. Inspect node 'R71-M0-N4-C:J14-U01' directly — responsible for most errors in this incident.
+    4. Review infrastructure change log for events preceding the burst start index.
+    5. Investigate I/O node connectivity — CIOD errors indicate communication failure.
+    6. Focus investigation on component: APP
 
   Agent Signals:
-    [LogInvestigationAgent     ] confidence=38% | Dominant failure pattern (7x): 'ciod: Error loading <VAR>: i
+    [LogInvestigationAgent     ] confidence=38% | Dominant failure pattern (7x): 'ciod: Error loading <*> : in
     [InfraAgent                ] confidence=66% | Burst shape: SUSTAINED (peak density 33.3%) | Hotspot compon
     [ContextAgent              ] confidence=81% | Primary failure category: IO (12 errors) | Most affected rac
 

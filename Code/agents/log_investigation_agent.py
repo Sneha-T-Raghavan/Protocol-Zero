@@ -24,6 +24,7 @@ from typing import List, Dict, Tuple, Optional
 from core.incident import Incident
 from agents.base_agent import BaseAgent
 from agents.rca_signal import RCASignal
+from utils.log_templates import extract_log_templates as _extract_templates_util
 
 # Levels considered errors for investigation scope
 ERROR_LEVELS = {"ERROR", "CRITICAL", "FATAL"}
@@ -101,10 +102,19 @@ class LogInvestigationAgent(BaseAgent):
         recommendations = self._build_recommendations(top_templates, top_comps, progression)
         confidence    = self._score_confidence(error_entries, top_templates)
 
+        # Build enriched template list with examples from the utility
+        messages_in_scope = [e.get("message", "") for e in error_entries]
+        enriched_templates = _extract_templates_util(messages_in_scope, max_templates=30)
+        enriched_top = [
+            t for t in enriched_templates
+            if t["template"] in {tmpl for tmpl, _ in top_templates}
+        ][:5]
+
         supporting = {
             "error_count_in_scope":  len(error_entries),
             "unique_templates":      len(template_counts),
             "top_templates":         [{"template": t, "count": c} for t, c in top_templates],
+            "top_templates_enriched": enriched_top,   # includes examples[]
             "top_keywords":          [{"keyword": k, "count": c} for k, c in top_keywords],
             "top_components":        [{"component": c, "count": n} for c, n in top_comps],
             "error_progression":     progression,
@@ -158,9 +168,21 @@ class LogInvestigationAgent(BaseAgent):
         return [e for e in parsed_logs[start:end] if e["level"] in ERROR_LEVELS]
 
     def _count_templates(self, entries: List[Dict]) -> Counter:
+        """
+        Count structural error templates using the improved log_templates utility.
+
+        The utility applies a richer multi-pass normalisation (hex, IP, timestamps,
+        BGL node IDs, UUIDs, job/rank IDs, bare integers, paths) and clusters
+        near-identical templates using token-set Jaccard similarity.
+
+        Returns a Counter keyed by template string for backward compatibility
+        with the rest of the agent (timeline, keyword extraction, etc.).
+        """
+        messages = [e.get("message", "") for e in entries]
+        structured = _extract_templates_util(messages, max_templates=30)
         c = Counter()
-        for e in entries:
-            c[_templatise(e.get("message", ""))] += 1
+        for t in structured:
+            c[t["template"]] = t["count"]
         return c
 
     def _count_keywords(self, entries: List[Dict]) -> Counter:

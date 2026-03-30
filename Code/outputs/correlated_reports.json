@@ -1,0 +1,504 @@
+[
+  {
+    "group_id": "ea71f94322b7fc548eadc895586755ba",
+    "incident_count": 1,
+    "incidents": [
+      "2d7e2484593211a39775aceff28ec9aa"
+    ],
+    "start_time": "2005-06-05T05:23:26.239153+00:00",
+    "end_time": "2005-06-05T05:23:26.239153+00:00",
+    "affected_components": [
+      "APP",
+      "KERNEL"
+    ],
+    "affected_nodes": [
+      "R04",
+      "R04-M1-N4-I:J18-U11",
+      "R11",
+      "R11-M0-NC-I:J18-U01",
+      "R27",
+      "R27-M1-N4-I:J18-U01",
+      "R30",
+      "R30-M0-N9-C:J16-U01",
+      "R30-M1-N3-C:J02-U01"
+    ],
+    "cascade_chain": [
+      "APP",
+      "KERNEL"
+    ],
+    "root_cause_hypothesis": "Burst shape: SPIKE (peak density 50.0%) | Hotspot component: KERNEL (4 errors) | Most affected node: R30-M0-N9-C:J16-U01 (3 errors) | Error velocity: 6.6 errors/100 log entries",
+    "confidence": 0.593
+  },
+  {
+    "group_id": "abec2d79396d0122a31d2c703c4b6f73",
+    "incident_count": 1,
+    "incidents": [
+      "6acb907e1401eece37774a30175dd4da"
+    ],
+    "start_time": "2005-06-07T06:05:49.961844+00:00",
+    "end_time": "2005-06-07T06:05:49.961844+00:00",
+    "affected_components": [
+      "APP",
+      "KERNEL"
+    ],
+    "affected_nodes": [
+      "R11",
+      "R11-M0-NC-I:J18-U01",
+      "R27",
+      "R27-M1-N4-I:J18-U01",
+      "R30",
+      "R30-M0-N9-C:J16-U01",
+      "R30-M1-N3-C:J02-U01"
+    ],
+    "cascade_chain": [
+      "APP",
+      "KERNEL"
+    ],
+    "root_cause_hypothesis": "Burst shape: SPIKE (peak density 100.0%) | Hotspot component: KERNEL (57 errors) | Most affected node: R30-M0-N9-C:J16-U01 (56 errors) | Error velocity: 39.33 errors/100 log entries",
+    "confidence": 0.757
+  },
+  {
+    "group_id": "9a8baad2d06ede09f3ec54ff0bd1f898",
+    "incident_count": 1,
+    "incidents": [
+      "c3ebe36b999f6e37c6720c96e69f67c2"
+    ],
+    "start_time": "2005-06-11T19:12:56.115636+00:00",
+    "end_time": "2005-06-11T19:12:56.115636+00:00",
+    "affected_components": [
+      "APP",
+      "KERNEL"
+    ],
+    "affected_nodes": [
+      "R01",
+      "R10",
+      "R10-M1-N5-C:J15-U11",
+      "R11",
+      "R11-M0-NC-I:J18-U01",
+      "R16",
+      "R16-M0-NB-C:J07-U11",
+      "R30",
+      "R30-M0-N9-C:J16-U01",
+      "R30-M1-N3-C:J02-U01"
+    ],
+    "cascade_chain": [
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 96.0%) | Hotspot component: KERNEL (74 errors) | Most affected node: R30-M0-N9-C:J16-U01 (60 errors) | Error velocity: 50.0 errors/100 log entries",
+    "confidence": 0.783
+  },
+  {
+    "group_id": "611a135f48c3309515fbba96db0e2694",
+    "incident_count": 3,
+    "incidents": [
+      "2b0150d4c9efaa9889d474178df8a9ad",
+      "e17daa575c50293a6ffcee8d9362d552",
+      "b7aa42c0f3ddbf47bd825cb5b9d9ea00"
+    ],
+    "start_time": "2005-06-13T17:41:57.658353+00:00",
+    "end_time": "2005-06-14T10:52:08.434393+00:00",
+    "affected_components": [
+      "APP",
+      "KERNEL"
+    ],
+    "affected_nodes": [
+      "R00-M0-N0-C:J13-U11",
+      "R02-M1-NC-C:J08-U11",
+      "R10-M1-N5-C:J15-U11",
+      "R11-M0-N7-C:J10-U01",
+      "R13-M0-NA-C:J15-U01",
+      "R15-M0-N9-C:J05-U11",
+      "R16-M0-NB-C:J07-U11",
+      "R20",
+      "R21",
+      "R24",
+      "R25",
+      "R25-M1-N3-C:J16-U01",
+      "R26",
+      "R30",
+      "R30-M0-N9-C:J16-U01"
+    ],
+    "cascade_chain": [
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 100.0%) | Hotspot component: KERNEL (143 errors) | Most affected node: R30-M0-N9-C:J16-U01 (34 errors) | Error velocity: 95.33 errors/100 log entries",
+    "confidence": 0.832
+  },
+  {
+    "group_id": "dbc98509980dc47ebcbf2ecfde59f0b5",
+    "incident_count": 1,
+    "incidents": [
+      "7f0e42d2dae85e0a82fd51d7952cb478"
+    ],
+    "start_time": "2005-07-23T17:47:06.550385+00:00",
+    "end_time": "2005-07-23T17:47:06.550385+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "HARDWARE",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R00",
+      "R00-M0-N2",
+      "R23-M0-N7",
+      "R24",
+      "R44",
+      "R61",
+      "R71",
+      "R71-M0-NC"
+    ],
+    "cascade_chain": [
+      "HARDWARE",
+      "DISCOVERY",
+      "MMCS",
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 54.0%) | Hotspot component: APP (21 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 28.67 errors/100 log entries",
+    "confidence": 0.705
+  },
+  {
+    "group_id": "5237afe0e6b9a4803ea21bc16f9ac010",
+    "incident_count": 1,
+    "incidents": [
+      "9659cd660404647b1595569600e7c2f8"
+    ],
+    "start_time": "2005-07-26T19:26:11.720872+00:00",
+    "end_time": "2005-07-26T19:26:11.720872+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "HARDWARE",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R00",
+      "R00-M0-N2",
+      "R23-M0-N7",
+      "R24",
+      "R44",
+      "R61",
+      "R71",
+      "R71-M0-NC"
+    ],
+    "cascade_chain": [
+      "HARDWARE",
+      "DISCOVERY",
+      "MMCS",
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 54.0%) | Hotspot component: APP (21 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 28.67 errors/100 log entries",
+    "confidence": 0.705
+  },
+  {
+    "group_id": "6847632d27d05bf1e403478cfa88913e",
+    "incident_count": 1,
+    "incidents": [
+      "cba277ab73480271c83ab14e58770954"
+    ],
+    "start_time": "2005-08-09T18:25:55.113195+00:00",
+    "end_time": "2005-08-09T18:25:55.113195+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "HARDWARE",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R00",
+      "R00-M0-N2",
+      "R23-M0-N7",
+      "R24",
+      "R44",
+      "R61",
+      "R71",
+      "R71-M0-NC"
+    ],
+    "cascade_chain": [
+      "HARDWARE",
+      "DISCOVERY",
+      "MMCS",
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SPIKE (peak density 64.0%) | Hotspot component: APP (22 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 29.33 errors/100 log entries",
+    "confidence": 0.714
+  },
+  {
+    "group_id": "eb585522e7c8a3c252ab968158512f8b",
+    "incident_count": 1,
+    "incidents": [
+      "ee21a971172c2a42c3945858c50713a7"
+    ],
+    "start_time": "2005-08-26T12:24:56.862775+00:00",
+    "end_time": "2005-08-26T12:24:56.862775+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "HARDWARE",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R00",
+      "R00-M0-N2",
+      "R23-M0-N7",
+      "R24",
+      "R44",
+      "R61",
+      "R71",
+      "R71-M0-NC"
+    ],
+    "cascade_chain": [
+      "HARDWARE",
+      "DISCOVERY",
+      "MMCS",
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 46.0%) | Hotspot component: APP (22 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 29.33 errors/100 log entries",
+    "confidence": 0.714
+  },
+  {
+    "group_id": "fed335eeeb1f55be155a6adb6b3d9627",
+    "incident_count": 1,
+    "incidents": [
+      "65f5d2ce8d8d9a23eebd846977590886"
+    ],
+    "start_time": "2005-08-28T03:11:54.456031+00:00",
+    "end_time": "2005-08-28T03:11:54.456031+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R01",
+      "R11",
+      "R11-M1-N7",
+      "R25-M1-N4-I:J18-U01",
+      "R27",
+      "R42",
+      "R42-M1-NC-I:J18-U11",
+      "R72",
+      "R72-M1-N4-I:J18-U01"
+    ],
+    "cascade_chain": [
+      "DISCOVERY",
+      "KERNEL",
+      "APP",
+      "MMCS"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 84.0%) | Hotspot component: MMCS (26 errors) | Most affected node: NULL (26 errors) | Cascade detected: DISCOVERY → KERNEL → APP → MMCS | Error velocity: 37.33 errors/100 log entries",
+    "confidence": 0.763
+  },
+  {
+    "group_id": "502389a267354da2876749d75f279038",
+    "incident_count": 1,
+    "incidents": [
+      "3976ce5b3e19dcf45bb6a52910b50f7a"
+    ],
+    "start_time": "2005-09-19T11:28:09.693945+00:00",
+    "end_time": "2005-09-19T11:28:09.693945+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R01",
+      "R16",
+      "R25-M1-N4-I:J18-U01",
+      "R27",
+      "R42-M1-NC-I:J18-U11",
+      "R62",
+      "R62-M1-N8-I:J18-U01",
+      "R72",
+      "R72-M1-N4-I:J18-U01"
+    ],
+    "cascade_chain": [
+      "KERNEL",
+      "APP",
+      "DISCOVERY",
+      "MMCS"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 70.0%) | Hotspot component: APP (27 errors) | Most affected node: NULL (26 errors) | Cascade detected: KERNEL → APP → DISCOVERY → MMCS | Error velocity: 42.67 errors/100 log entries",
+    "confidence": 0.777
+  },
+  {
+    "group_id": "ff0581016cf376208cb676233de886b7",
+    "incident_count": 1,
+    "incidents": [
+      "f5491880ff200d76d8199cdf0964d3b5"
+    ],
+    "start_time": "2005-09-24T13:04:00.023717+00:00",
+    "end_time": "2005-09-24T13:04:00.023717+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R01",
+      "R01-M1-N4-I:J18-U11",
+      "R16",
+      "R24-M1-NC-I:J18-U01",
+      "R27",
+      "R34-M1-N8-I:J18-U01",
+      "R62",
+      "R62-M1-N8-I:J18-U01",
+      "R73"
+    ],
+    "cascade_chain": [
+      "KERNEL",
+      "APP",
+      "DISCOVERY",
+      "MMCS"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 72.0%) | Hotspot component: APP (39 errors) | Most affected node: NULL (26 errors) | Cascade detected: KERNEL → APP → DISCOVERY → MMCS | Error velocity: 48.0 errors/100 log entries",
+    "confidence": 0.796
+  },
+  {
+    "group_id": "8355497def234c171954c9b2cf99260f",
+    "incident_count": 1,
+    "incidents": [
+      "d32a14556f5b9995b02e1916e5d71bcd"
+    ],
+    "start_time": "2005-11-04T18:02:11.252563+00:00",
+    "end_time": "2005-11-04T18:02:11.252563+00:00",
+    "affected_components": [
+      "APP",
+      "KERNEL"
+    ],
+    "affected_nodes": [
+      "R46",
+      "R50",
+      "R50-M0-N4-I:J18-U01",
+      "R57",
+      "R60",
+      "R60-M0-N0-I:J18-U01",
+      "R62",
+      "R62-M0-N2-C:J09-U11",
+      "R62-M0-N4-C:J13-U01",
+      "R63-M0-N6-C:J12-U11"
+    ],
+    "cascade_chain": [
+      "APP",
+      "KERNEL"
+    ],
+    "root_cause_hypothesis": "Burst shape: SPIKE (peak density 20.0%) | Hotspot component: KERNEL (9 errors) | Error velocity: 8.0 errors/100 log entries",
+    "confidence": 0.611
+  },
+  {
+    "group_id": "4c24d612fbd62f2e222845d0c681b493",
+    "incident_count": 1,
+    "incidents": [
+      "54e1fbcb2f59a93b547e5c080ddf7573"
+    ],
+    "start_time": "2005-11-10T12:11:52.704752+00:00",
+    "end_time": "2005-11-10T12:11:52.704752+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "HARDWARE",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R00",
+      "R00-M0-N2",
+      "R23-M0-N7",
+      "R24",
+      "R44",
+      "R61",
+      "R71",
+      "R71-M0-NC"
+    ],
+    "cascade_chain": [
+      "HARDWARE",
+      "DISCOVERY",
+      "MMCS",
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 48.0%) | Hotspot component: APP (22 errors) | Most affected node: NULL (9 errors) | Cascade detected: HARDWARE → DISCOVERY → MMCS → KERNEL | Error velocity: 30.0 errors/100 log entries",
+    "confidence": 0.718
+  },
+  {
+    "group_id": "13e97982d82f3e0c9bad667199298fab",
+    "incident_count": 1,
+    "incidents": [
+      "1998cdb5689783cc14e64240a82ddac0"
+    ],
+    "start_time": "2005-12-01T08:33:03.466525+00:00",
+    "end_time": "2005-12-01T08:33:03.466525+00:00",
+    "affected_components": [
+      "APP",
+      "KERNEL"
+    ],
+    "affected_nodes": [
+      "R03",
+      "R03-M0-N7-C:J07-U01",
+      "R20",
+      "R46-M0-N8-I:J18-U11",
+      "R52-M1-NA-C:J03-U01",
+      "R61",
+      "R62",
+      "R64",
+      "R64-M1-NC-I:J18-U01",
+      "R71-M0-N4-C:J14-U01"
+    ],
+    "cascade_chain": [
+      "KERNEL",
+      "APP"
+    ],
+    "root_cause_hypothesis": "Burst shape: SUSTAINED (peak density 33.3%) | Hotspot component: APP (17 errors) | Error velocity: 17.69 errors/100 log entries",
+    "confidence": 0.618
+  },
+  {
+    "group_id": "f7c0ec7f0332a3c7ddd09b2953372eea",
+    "incident_count": 1,
+    "incidents": [
+      "3b4a131c76e475654784ee430f47a7dd"
+    ],
+    "start_time": "2026-03-30T09:05:52.928098+00:00",
+    "end_time": "2026-03-30T09:05:52.928098+00:00",
+    "affected_components": [
+      "APP",
+      "DISCOVERY",
+      "HARDWARE",
+      "KERNEL",
+      "MMCS"
+    ],
+    "affected_nodes": [
+      "R16-M1-NC-I:J18-U11",
+      "R20",
+      "R24",
+      "R25-M1-N3-C:J16-U01",
+      "R26",
+      "R27",
+      "R27-M1-N4-I:J18-U01",
+      "R30",
+      "R30-M0-N9-C:J16-U01"
+    ],
+    "cascade_chain": [
+      "APP",
+      "KERNEL",
+      "DISCOVERY",
+      "HARDWARE",
+      "MMCS"
+    ],
+    "root_cause_hypothesis": "Burst shape: FLOOD (peak density 100.0%) | Hotspot component: KERNEL (240 errors) | Most affected node: R30-M0-N9-C:J16-U01 (60 errors) | Cascade detected: APP → KERNEL → DISCOVERY → HARDWARE | Error velocity: 19.75 errors/100 log entries",
+    "confidence": 0.834
+  }
+]
